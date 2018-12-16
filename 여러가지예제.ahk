@@ -10,20 +10,20 @@ CoordMode, Mouse, Screen ; 마우스 영역을 전체화면으로
 ; 글로벌은 함수에서는 구이변수를 접근이 안되기 때문에 접근가능 하도록 해주기위해 쓰인다.
 global 초,핸들,멈춤체크,툴팁유무
 global 좌표 := []
-global 목록 := ["매수","매도","취소","지정가매수","지정가매도","모두청산"]
+global 목록 := ["1","2","3","4","5","6"]
 global 설정파일경로 := A_WorkingDir "\설정.ini" ; 설정파일
 OutputDebug, 전역변수 설정 완료
 Gui, +AlwaysOnTop ; 항상 최상위
-Gui, Add, Button, x10 y10 w50 h50 g버튼, 매수
-Gui, Add, Button, x70 y10 w50 h50 g버튼, 매도
-Gui, Add, Button, x130 y10 w50 h50 g버튼, 취소
-Gui, Add, Button, x10 y70 w50 h50 g버튼, 지정가매수
-Gui, Add, Button, x70 y70 w50 h50 g버튼, 지정가매도
-Gui, Add, Button, x130 y70 w50 h50 g버튼, 모두청산
+Gui, Add, Button, x10 y10 w50 h50 g버튼, 1
+Gui, Add, Button, x70 y10 w50 h50 g버튼, 2
+Gui, Add, Button, x130 y10 w50 h50 g버튼, 3
+Gui, Add, Button, x10 y70 w50 h50 g버튼, 4
+Gui, Add, Button, x70 y70 w50 h50 g버튼, 5
+Gui, Add, Button, x130 y70 w50 h50 g버튼, 6
 ;Gui, Add, Button, x20 y150 w75 h25 gtest, 배열보기 ; ggetPos는 getPos:로 가는 고투?
 Gui, Add, Edit, x23 y130 w20 h18 g초설정 v구이_초 Number, 59 ; 옵션인 Number = 숫자만 입력가능
 Gui, Add, Text, x48 y134, 초
-Gui, Add, DropDownList, x105 y128 w75 g좌표설정 v이름 Choose1, 좌표따기|매수|매도|취소|지정가매수|지정가매도|모두청산
+Gui, Add, DropDownList, x105 y128 w75 g좌표설정 v이름 Choose1, 좌표따기|1|2|3|4|5|6
 Gui, Add, ListView, x190 y10 w120 h140 hwnd리스트뷰핸들 Disabled,확인
 Gui, Add, Checkbox, x60 y134 Checked V구이_체크 g툴팁설정, 툴팁
 ;Gui, Add, Button, x190 y100 w10 h10 gre, 새로고침 ;
