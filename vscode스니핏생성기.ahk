@@ -17,7 +17,7 @@ ExitApp
 F2::
 Gui, Submit, NoHide
 
-str = "%s%": {{}`n"prefix" : "%p%",`n"body" : ["%b%"],`n"description" : "%d%"{Down},
+str = "%s%" : {{}`n"prefix" : "%p%",`n"body" : [`n"%b%",`n],`n"description" : "%d%"{Down},
 SendInput, %str%
 return
 
