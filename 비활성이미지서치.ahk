@@ -7,9 +7,18 @@
 	x2 = 이미지서치의 두번째 x 좌표
 	y2 = 이미지서치의 두번째 y 좌표
 	UD = 마우스 업 다운
+
+
+	18 12 30 0.1
+	
+	# 추가할것 #
+	# 전체화면 활성화면 나누기
+	# 비활성 클릭추가
+	# 리스트목록 클릭시 좌표따기
 */ 
 
 Hotkey, LButton, off
+Hotkey, RButton, off
 
 ; if (!A_IsAdmin)
 ; {
@@ -27,12 +36,14 @@ Hotkey, LButton, off
 ;#NoTrayIcon
 #Persistent
 #NoEnv
+#WinActivateForce
 ;#InstallMouseHook
 ;#InstallKeybdHook
 SetTitleMatchMode, 2
 ;BlockInput, On
-CoordMode, Mouse, Screen
-CoordMode, Pixel, Screen
+CoordMode, Mouse, Relative
+CoordMode, Pixel, Relative
+CoordMode, ToolTip, Relative
 SetBatchLines, -1
 Process, Priority,, High 
 
@@ -42,65 +53,88 @@ quotient := 1
 
 
 Gui, +AlwaysOnTop +Owner -SysMenu 
-Gui, Add, Button, x5 y5 w60 h20, 파일선택
-Gui, Add, Button, x75 y5 w60 h20, 검색
+Gui, Add, Button, x5 y5 w60 h20, 창
+; Gui, Add, Button, x75 y5 w60 h20, 검색
+Gui, Add, Button, x145 y5 w60 h20 Disabled, 파일선택
+Gui, Add, Button, x285 y5 w60 h20 gGuiClose, 닫기
+Gui, Add, DropDownList, x180 y30 w60 vposList gmove Choose1 , 선택
+Gui, Add, Edit, x5 y30 w80 h20 Disabled center, %x1%%y1% 
+Gui, Add, Edit, x90 y30 w80 h20 Disabled center, %x2%%y2%
+;Gui, Add, Pic, x5 y55 Border
+
 ;Gui, Add, Button, x145 y5 w60 h20 gMGP, 처음
 ;Gui, Add, Button, x215 y5 w60 h20 gMGP, 마지막
-Gui, Add, Button, x285 y5 w60 h20 gGuiClose, 닫기 
-
-Gui, Add, Edit, x5 y30 w100 h20 Disabled, %x1%%y1% 
-Gui, Add, Edit, x110 y30 w100 h20 Disabled, %x2%%y2%
-
-
-Gui, Add, Pic, x5 y55
 Gui, Show, AutoSize, >  
 Return
     
-Button파일선택:    
-Gui, Submit 
-FileSelectFile, p
-if (ErrorLevel == 0)
+move:
+Gui, Submit
+if (posList == "선택")
 {
-	GuiControl,, Static1, *w150 *h150 %p%	 
+        Return
+}
+else
+{
+	WinActivate, %title%
+	{
+		temppos := LISTArray[posList]
+		StringSplit, position, temppos, `,
+		ToolTip, % "↓", position1 + (xx / 2) - 12, position2 - 25, 1
+		ToolTip, % "↑", position1 + (xx / 2) - 12, position2 + yy + 5, 2
+	}
 } 
-Gui, Show, AutoSize
+Gui, show,, % "x = " position1 " y = " position2
 Return
 
 LButton::Return
+RButton::Return
 
- 
- 
-
-   
-Button검색: 
-ToolTip
-Gui, Submit, NoHide
-Gui, Show,, > 원하는창 선택후 스페이스  
-Keywait, Space, D 
-Keywait, Space
+Button창:
+Gui, Show,, > 원하는창 선택후 마우스 오른클릭
+Hotkey, RButton, on
+Keywait, RButton, D 
+Keywait, RButton
+Hotkey, RButton, off
 hwnd := WinExist("A")
-gdipToken := Gdip_Startup() 
-Haystack := Gdip_BitmapFromHWND(hwnd) ; 건초더미
+WinGetActiveTitle, title
+GuiControl, Enable, Button2
+Gui, Show,, > %title%
+return
+global LISTArray =
+Button파일선택:    
+Gui, Submit 
+FileSelectFile, p
+gdipToken := Gdip_Startup()
 ; Haystack := Gdip_BitmapFromScreen() ; 전체화면
-Gdip_SetBitmapToClipboard(Haystack) 
+Haystack := Gdip_BitmapFromHWND(hwnd) ; 건초더미
 Needle := Gdip_CreateBitmapFromFile(p) ; 바늘
+Gdip_GetImageDimensions(Needle, xx, yy)
+; Gdip_SetBitmapToClipboard(Haystack) 
 ; Gdip_ImageSearch(핸들,이미지,ByRef 리스트,X1,Y1,X2,Y2,오차값,투명도,검색방향,찾고자하는수,라인피드",구분자) 
 RET := Gdip_ImageSearch(Haystack,Needle,LIST,0,0,0,0,0,0xFFFFFF,1,0)
-Gdip_DisposeImage(bmpHaystack)
-Gdip_DisposeImage(bmpNeedle) 
+Gdip_DisposeImage(Haystack)
+Gdip_DisposeImage(Needle)
 Gdip_Shutdown(gdipToken)
-LISTArray := StrSplit(LIST,"`n")
-for i, v in LISTArray
+if (RET != 0)
 {
-	StringSplit, position, v, `,
-	MouseMove, position1, position2
-	ToolTip, % v
-	sleep, 500
+	WinActivate, %title%
+	ToolTip
+	LISTArray := StrSplit(LIST,"`n")
+	for i, v in LISTArray
+	{
+		tempPosList .= "|" i
+		StringSplit, position, v, `,
+	}
 }
-ToolTip, % RET
+GuiControl,, Edit1, Width = %xx%
+GuiControl,, Edit2, Height = %yy%
+GuiControl,,posList, %tempPosList%
+Gui, Show,, > %RET% 개 찾음
+ToolTip,,,,1
+ToolTip,,,,2
+Sleep, 750
 Gui, Show,, >
 Return
-
 
 
 str =

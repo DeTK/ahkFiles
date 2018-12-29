@@ -201,11 +201,11 @@ Start:
   MsgBox, 4160, 창 선택, 창 선택을 시작하려면 OK를 누른후`n마우스 커서를 원하는 창에 올린뒤 "스페이스 바"를 눌러 주시면 됩니다. 
 
   IfMsgBox No
-
-   goto, Start   
+ 
+   goto, Start    
 
   keywait, Space, D
-
+ 
   keywait, Space
 
   WinGetActiveTitle, winidX

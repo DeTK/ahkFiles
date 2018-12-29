@@ -1,26 +1,26 @@
-NaverID2= wmf2225
+ï»¿NaverID2= wmf2225
 NaverPW2= guswnd7606
 gui,color,B0e0e6,white
 GuiControl,,List,|
-Gui, Add, GroupBox, x2 y9 w290 h260 , Æ÷½ºÆÃ
-Gui, Add, GroupBox, x2 y260 w290 h160 , ·Î±×±â·Ï
-Gui, Add, Button, x12 y29 w50 h20 , ¸Ş´º
-Gui, Add, Button, x12 y49 w50 h20 Disabled, Á¦¸ñ
-Gui, Add, Button, x12 y69 w50 h20 Disabled, ÅÂ±×
-Gui, Add, Button, x12 y89 w50 h20 Disabled, ¼³Á¤
-Gui, Add, Button, x12 y199 w270 h20 , ÀÛ¼ºÇÏ±â
-Gui, Add, Button, x12 y219 w270 h20 Disabled, ¼öÁ¤ÇÏ±â
-Gui, Add, Button, x12 y239 w270 h20 , ¼³Á¤ÃÊ±âÈ­
+Gui, Add, GroupBox, x2 y9 w290 h260 , í¬ìŠ¤íŒ…
+Gui, Add, GroupBox, x2 y260 w290 h160 , ë¡œê·¸ê¸°ë¡
+Gui, Add, Button, x12 y29 w50 h20 , ë©”ë‰´
+Gui, Add, Button, x12 y49 w50 h20 Disabled, ì œëª©
+Gui, Add, Button, x12 y69 w50 h20 Disabled, íƒœê·¸
+Gui, Add, Button, x12 y89 w50 h20 Disabled, ì„¤ì •
+Gui, Add, Button, x12 y199 w270 h20 , ì‘ì„±í•˜ê¸°
+Gui, Add, Button, x12 y219 w270 h20 Disabled, ìˆ˜ì •í•˜ê¸°
+Gui, Add, Button, x12 y239 w270 h20 , ì„¤ì •ì´ˆê¸°í™”
 Gui, Add, Edit, x62 y49 w220 h20 vtitle, 
-Gui, Add, Edit, x62 y69 w220 h20 vÅÂ±×, 
+Gui, Add, Edit, x62 y69 w220 h20 víƒœê·¸, 
 Gui, Add, Edit, x12 y109 w270 h90 vsource, 
 Gui, Add, DropDownList, x62 y29 w220 h500 vlist, 
-Gui, Add, DropDownList, x62 y89 w220 h100 v¼³Á¤, ÀüÃ¼°ø°³|ÀÌ¿ô°ø°³|¼­·ÎÀÌ¿ô°ø°³|ºñ°ø°³
+Gui, Add, DropDownList, x62 y89 w220 h100 vì„¤ì •, ì „ì²´ê³µê°œ|ì´ì›ƒê³µê°œ|ì„œë¡œì´ì›ƒê³µê°œ|ë¹„ê³µê°œ
 Gui, Add, ListBox, x12 y280 w270 h140 vlog, 
-Gui, Show, x1000 y300 h433 w301, ºí·Î±×ÀÛ¼º±â
+Gui, Show, x1000 y300 h433 w301, ë¸”ë¡œê·¸ì‘ì„±ê¸°
 
 
-button¸Ş´º:
+buttonë©”ë‰´:
 winHttp := ComObjCreate("WinHttp.WinHttpRequest.5.1")
 winhttp.Open("POST", "https://nid.naver.com/nidlogin.login")
 winhttp.SetRequestHeader( "Referer", "https://nid.naver.com/nidlogin.login")
@@ -35,25 +35,25 @@ loop {
     RegExMatch(a,"categoryNo.*?parentCategoryName""", c)
     StringTrimLeft,b,b,15
     StringTrimLeft,c,c,12
-    Á¦¸ñ := ID%a_index%,ÄÚµå := Code%a_index%
-    StringTrimRight,Á¦¸ñ,b,9
-    StringTrimRight,ÄÚµå,c,20
-    if Á¦¸ñ =
+    ì œëª© := ID%a_index%,ì½”ë“œ := Code%a_index%
+    StringTrimRight,ì œëª©,b,9
+    StringTrimRight,ì½”ë“œ,c,20
+    if ì œëª© =
     {
         break
     }
-    stringgetpos,pos,a,%Á¦¸ñ%
+    stringgetpos,pos,a,%ì œëª©%
     StringTrimLeft,a,a,%pos%
-    a := RegExReplace(a, "" . Á¦¸ñ . """", ""),a := RegExReplace(a, """categoryNo"":" . ÄÚµå, ""),ÄÚµå := RegExReplace(ÄÚµå, ",", "")
-    GuiControl,,List,%Á¦¸ñ% : %ÄÚµå%
+    a := RegExReplace(a, "" . ì œëª© . """", ""),a := RegExReplace(a, """categoryNo"":" . ì½”ë“œ, ""),ì½”ë“œ := RegExReplace(ì½”ë“œ, ",", "")
+    GuiControl,,List,%ì œëª©% : %ì½”ë“œ%
 }
-guicontrol,,log,Ä«Å×°í¸®ºÒ·¯¿À±â¿Ï·á||
+guicontrol,,log,ì¹´í…Œê³ ë¦¬ë¶ˆëŸ¬ì˜¤ê¸°ì™„ë£Œ||
 return
 
 
 GuiClose:
 ExitApp
-buttonÀÛ¼ºÇÏ±â:
+buttonì‘ì„±í•˜ê¸°:
 gui,submit,nohide
 stringgetpos,list1,list,:
 li:=list1+2
@@ -65,7 +65,7 @@ sou:=encode(source)
 ti:=encode(title)
 sos=blogId=%NaverID2%&ir1=%sou%&post.category.categoryNo=%list%&post.contents.contentsValue=%sou%&post.title=%ti%
 winhttp.Send(sos)
-guicontrol,,log,ÀÛ¼º¼º°ø||
+guicontrol,,log,ì‘ì„±ì„±ê³µ||
 return
 
 

@@ -166,7 +166,7 @@ Return
 
 불러오기:
     Gui, 메인:Submit, NoHide
-    if (%A_GuiControl% == "파일 선택") {
+    if (A_GuiControl == "파일 선택") {
         Return
     }
     Gui, 메인:Show, w%넓이% h40, new깃발꼽기

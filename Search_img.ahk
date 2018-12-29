@@ -19,3 +19,5 @@ Gdip_Shutdown(pToken)
 return false
 }
 }
+
+이 행에는 인식 된 작업이 없습니다.
