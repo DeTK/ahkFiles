@@ -1,6 +1,6 @@
-;------------------------------------Ã¹¹øÂ°ÆÄÀÏ----------------------------------
+ï»¿;------------------------------------ì²«ë²ˆì§¸íŒŒì¼----------------------------------
 F1::
-;ÈŞ¸Õ
+;íœ´ë¨¼
 send !c
 sleep 200
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
@@ -13,7 +13,7 @@ if ErrorLevel = 0
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
 if ErrorLevel = 0
 {
-	Mousemove, x1+250,y1+100 ;ÈŞ¸Õ
+	Mousemove, x1+250,y1+100 ;íœ´ë¨¼
 	sleep 200
 }
 Click 2
@@ -39,7 +39,7 @@ if ErrorLevel = 0
 	sleep 200	
 	send {Enter}
 	sleep 200
-;³ªÀÌÆ®¿¤ÇÁ
+;ë‚˜ì´íŠ¸ì—˜í”„
 send !c
 sleep 200
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
@@ -52,7 +52,7 @@ if ErrorLevel = 0
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
 if ErrorLevel = 0
 {
-	Mousemove, x1+250,y1+110 ;¿¤ÇÁ
+	Mousemove, x1+250,y1+110 ;ì—˜í”„
 	sleep 200
 }
 Click 2
@@ -78,7 +78,7 @@ if ErrorLevel = 0
 	sleep 200	
 	send {Enter}
 	sleep 200
-;¿ÀÅ©
+;ì˜¤í¬
 send !c
 sleep 200
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
@@ -91,7 +91,7 @@ if ErrorLevel = 0
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
 if ErrorLevel = 0
 {
-	Mousemove, x1+250,y1+130 ;¿ÀÅ©
+	Mousemove, x1+250,y1+130 ;ì˜¤í¬
 	sleep 200
 }
 Click 2
@@ -116,7 +116,7 @@ if ErrorLevel = 0
 	sleep 200	
 	send {Enter}
 	sleep 200
-;¾ğµ¥µå
+;ì–¸ë°ë“œ
 send !c
 sleep 200
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
@@ -129,7 +129,7 @@ if ErrorLevel = 0
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
 if ErrorLevel = 0
 {
-	Mousemove, x1+250,y1+145 ;¾ğµ¥µå
+	Mousemove, x1+250,y1+145 ;ì–¸ë°ë“œ
 	sleep 200
 }
 Click 2
@@ -155,9 +155,9 @@ if ErrorLevel = 0
 	sleep 200	
 	send {Enter}
 return
-;------------------------------------µÎ¹øÂ°ÆÄÀÏ----------------------------------
+;------------------------------------ë‘ë²ˆì§¸íŒŒì¼----------------------------------
 F2::
-;ÈŞ¸Õ
+;íœ´ë¨¼
 send !c
 sleep 200
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
@@ -170,7 +170,7 @@ if ErrorLevel = 0
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
 if ErrorLevel = 0
 {
-	Mousemove, x1+250,y1+100 ;ÈŞ¸Õ
+	Mousemove, x1+250,y1+100 ;íœ´ë¨¼
 	sleep 200
 }
 Click 2
@@ -196,7 +196,7 @@ if ErrorLevel = 0
 	sleep 200	
 	send {Enter}
 	sleep 200
-;³ªÀÌÆ®¿¤ÇÁ
+;ë‚˜ì´íŠ¸ì—˜í”„
 send !c
 sleep 200
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
@@ -209,7 +209,7 @@ if ErrorLevel = 0
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
 if ErrorLevel = 0
 {
-	Mousemove, x1+250,y1+110 ;¿¤ÇÁ
+	Mousemove, x1+250,y1+110 ;ì—˜í”„
 	sleep 200
 }
 Click 2
@@ -235,7 +235,7 @@ if ErrorLevel = 0
 	sleep 200	
 	send {Enter}
 	sleep 200
-;¿ÀÅ©
+;ì˜¤í¬
 send !c
 sleep 200
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
@@ -248,7 +248,7 @@ if ErrorLevel = 0
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
 if ErrorLevel = 0
 {
-	Mousemove, x1+250,y1+130 ;¿ÀÅ©
+	Mousemove, x1+250,y1+130 ;ì˜¤í¬
 	sleep 200
 }
 Click 2
@@ -273,7 +273,7 @@ if ErrorLevel = 0
 	sleep 200	
 	send {Enter}
 	sleep 200
-;¾ğµ¥µå
+;ì–¸ë°ë“œ
 send !c
 sleep 200
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
@@ -286,7 +286,7 @@ if ErrorLevel = 0
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
 if ErrorLevel = 0
 {
-	Mousemove, x1+250,y1+145 ;¾ğµ¥µå
+	Mousemove, x1+250,y1+145 ;ì–¸ë°ë“œ
 	sleep 200
 }
 Click 2
@@ -312,9 +312,9 @@ if ErrorLevel = 0
 	sleep 200	
 	send {Enter}
 return
-;------------------------------------¼¼¹øÂ°ÆÄÀÏ----------------------------------
+;------------------------------------ì„¸ë²ˆì§¸íŒŒì¼----------------------------------
 F3::
-;ÈŞ¸Õ
+;íœ´ë¨¼
 send !c
 sleep 200
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
@@ -327,7 +327,7 @@ if ErrorLevel = 0
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
 if ErrorLevel = 0
 {
-	Mousemove, x1+250,y1+100 ;ÈŞ¸Õ
+	Mousemove, x1+250,y1+100 ;íœ´ë¨¼
 	sleep 200
 }
 Click 2
@@ -353,7 +353,7 @@ if ErrorLevel = 0
 	sleep 200	
 	send {Enter}
 	sleep 200
-;³ªÀÌÆ®¿¤ÇÁ
+;ë‚˜ì´íŠ¸ì—˜í”„
 send !c
 sleep 200
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
@@ -366,7 +366,7 @@ if ErrorLevel = 0
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
 if ErrorLevel = 0
 {
-	Mousemove, x1+250,y1+110 ;¿¤ÇÁ
+	Mousemove, x1+250,y1+110 ;ì—˜í”„
 	sleep 200
 }
 Click 2
@@ -392,7 +392,7 @@ if ErrorLevel = 0
 	sleep 200	
 	send {Enter}
 	sleep 200
-;¿ÀÅ©
+;ì˜¤í¬
 send !c
 sleep 200
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
@@ -405,7 +405,7 @@ if ErrorLevel = 0
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
 if ErrorLevel = 0
 {
-	Mousemove, x1+250,y1+130 ;¿ÀÅ©
+	Mousemove, x1+250,y1+130 ;ì˜¤í¬
 	sleep 200
 }
 Click 2
@@ -430,7 +430,7 @@ if ErrorLevel = 0
 	sleep 200	
 	send {Enter}
 	sleep 200
-;¾ğµ¥µå
+;ì–¸ë°ë“œ
 send !c
 sleep 200
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
@@ -443,7 +443,7 @@ if ErrorLevel = 0
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
 if ErrorLevel = 0
 {
-	Mousemove, x1+250,y1+145 ;¾ğµ¥µå
+	Mousemove, x1+250,y1+145 ;ì–¸ë°ë“œ
 	sleep 200
 }
 Click 2
@@ -469,9 +469,9 @@ if ErrorLevel = 0
 	sleep 200	
 	send {Enter}
 return
-;------------------------------------³×¹øÂ°ÆÄÀÏ----------------------------------
+;------------------------------------ë„¤ë²ˆì§¸íŒŒì¼----------------------------------
 F4::
-;ÈŞ¸Õ
+;íœ´ë¨¼
 send !c
 sleep 200
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
@@ -484,7 +484,7 @@ if ErrorLevel = 0
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
 if ErrorLevel = 0
 {
-	Mousemove, x1+250,y1+100 ;ÈŞ¸Õ
+	Mousemove, x1+250,y1+100 ;íœ´ë¨¼
 	sleep 200
 }
 Click 2
@@ -510,7 +510,7 @@ if ErrorLevel = 0
 	sleep 200	
 	send {Enter}
 	sleep 200
-;³ªÀÌÆ®¿¤ÇÁ
+;ë‚˜ì´íŠ¸ì—˜í”„
 send !c
 sleep 200
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
@@ -523,7 +523,7 @@ if ErrorLevel = 0
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
 if ErrorLevel = 0
 {
-	Mousemove, x1+250,y1+110 ;¿¤ÇÁ
+	Mousemove, x1+250,y1+110 ;ì—˜í”„
 	sleep 200
 }
 Click 2
@@ -549,7 +549,7 @@ if ErrorLevel = 0
 	sleep 200	
 	send {Enter}
 	sleep 200
-;¿ÀÅ©
+;ì˜¤í¬
 send !c
 sleep 200
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
@@ -562,7 +562,7 @@ if ErrorLevel = 0
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
 if ErrorLevel = 0
 {
-	Mousemove, x1+250,y1+130 ;¿ÀÅ©
+	Mousemove, x1+250,y1+130 ;ì˜¤í¬
 	sleep 200
 }
 Click 2
@@ -587,7 +587,7 @@ if ErrorLevel = 0
 	sleep 200	
 	send {Enter}
 	sleep 200
-;¾ğµ¥µå
+;ì–¸ë°ë“œ
 send !c
 sleep 200
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
@@ -600,7 +600,7 @@ if ErrorLevel = 0
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
 if ErrorLevel = 0
 {
-	Mousemove, x1+250,y1+145 ;¾ğµ¥µå
+	Mousemove, x1+250,y1+145 ;ì–¸ë°ë“œ
 	sleep 200
 }
 Click 2
@@ -626,9 +626,9 @@ if ErrorLevel = 0
 	sleep 200	
 	send {Enter}
 return
-;------------------------------------´Ù¼¸¹øÂ°ÆÄÀÏ----------------------------------
+;------------------------------------ë‹¤ì„¯ë²ˆì§¸íŒŒì¼----------------------------------
 F5::
-;ÈŞ¸Õ
+;íœ´ë¨¼
 send !c
 sleep 200
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
@@ -641,7 +641,7 @@ if ErrorLevel = 0
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
 if ErrorLevel = 0
 {
-	Mousemove, x1+250,y1+100 ;ÈŞ¸Õ
+	Mousemove, x1+250,y1+100 ;íœ´ë¨¼
 	sleep 200
 }
 Click 2
@@ -667,7 +667,7 @@ if ErrorLevel = 0
 	sleep 200	
 	send {Enter}
 	sleep 200
-;³ªÀÌÆ®¿¤ÇÁ
+;ë‚˜ì´íŠ¸ì—˜í”„
 send !c
 sleep 200
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
@@ -680,7 +680,7 @@ if ErrorLevel = 0
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
 if ErrorLevel = 0
 {
-	Mousemove, x1+250,y1+110 ;¿¤ÇÁ
+	Mousemove, x1+250,y1+110 ;ì—˜í”„
 	sleep 200
 }
 Click 2
@@ -706,7 +706,7 @@ if ErrorLevel = 0
 	sleep 200	
 	send {Enter}
 	sleep 200
-;¿ÀÅ©
+;ì˜¤í¬
 send !c
 sleep 200
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
@@ -719,7 +719,7 @@ if ErrorLevel = 0
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
 if ErrorLevel = 0
 {
-	Mousemove, x1+250,y1+130 ;¿ÀÅ©
+	Mousemove, x1+250,y1+130 ;ì˜¤í¬
 	sleep 200
 }
 Click 2
@@ -744,7 +744,7 @@ if ErrorLevel = 0
 	sleep 200	
 	send {Enter}
 	sleep 200
-;¾ğµ¥µå
+;ì–¸ë°ë“œ
 send !c
 sleep 200
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
@@ -757,7 +757,7 @@ if ErrorLevel = 0
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
 if ErrorLevel = 0
 {
-	Mousemove, x1+250,y1+145 ;¾ğµ¥µå
+	Mousemove, x1+250,y1+145 ;ì–¸ë°ë“œ
 	sleep 200
 }
 Click 2
@@ -783,9 +783,9 @@ if ErrorLevel = 0
 	sleep 200	
 	send {Enter}
 return
-;------------------------------------¿©¼¸¹øÂ°ÆÄÀÏ----------------------------------
+;------------------------------------ì—¬ì„¯ë²ˆì§¸íŒŒì¼----------------------------------
 F6::
-;ÈŞ¸Õ
+;íœ´ë¨¼
 send !c
 sleep 200
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
@@ -798,7 +798,7 @@ if ErrorLevel = 0
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
 if ErrorLevel = 0
 {
-	Mousemove, x1+250,y1+100 ;ÈŞ¸Õ
+	Mousemove, x1+250,y1+100 ;íœ´ë¨¼
 	sleep 200
 }
 Click 2
@@ -824,7 +824,7 @@ if ErrorLevel = 0
 	sleep 200	
 	send {Enter}
 	sleep 200
-;³ªÀÌÆ®¿¤ÇÁ
+;ë‚˜ì´íŠ¸ì—˜í”„
 send !c
 sleep 200
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
@@ -837,7 +837,7 @@ if ErrorLevel = 0
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
 if ErrorLevel = 0
 {
-	Mousemove, x1+250,y1+110 ;¿¤ÇÁ
+	Mousemove, x1+250,y1+110 ;ì—˜í”„
 	sleep 200
 }
 Click 2
@@ -863,7 +863,7 @@ if ErrorLevel = 0
 	sleep 200	
 	send {Enter}
 	sleep 200
-;¿ÀÅ©
+;ì˜¤í¬
 send !c
 sleep 200
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
@@ -876,7 +876,7 @@ if ErrorLevel = 0
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
 if ErrorLevel = 0
 {
-	Mousemove, x1+250,y1+130 ;¿ÀÅ©
+	Mousemove, x1+250,y1+130 ;ì˜¤í¬
 	sleep 200
 }
 Click 2
@@ -901,7 +901,7 @@ if ErrorLevel = 0
 	sleep 200	
 	send {Enter}
 	sleep 200
-;¾ğµ¥µå
+;ì–¸ë°ë“œ
 send !c
 sleep 200
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
@@ -914,7 +914,7 @@ if ErrorLevel = 0
 ImageSearch, x1, y1, 1,1, 1920, 1080, *50 B.png
 if ErrorLevel = 0
 {
-	Mousemove, x1+250,y1+145 ;¾ğµ¥µå
+	Mousemove, x1+250,y1+145 ;ì–¸ë°ë“œ
 	sleep 200
 }
 Click 2

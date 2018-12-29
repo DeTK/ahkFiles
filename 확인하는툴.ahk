@@ -1,15 +1,13 @@
-﻿ㄷ
-
-if not A_IsAdmin
+﻿if not A_IsAdmin
 
 {
 
   Run *RunAs "%A_ScriptFullPath%"
 
-  ExitAppㄸㄸㄷ
+  ExitApp
 
 }
-
+ 
 ; ========================
 
 #SingleInstance, force
@@ -247,7 +245,7 @@ Cord:
 
   IfMsgBox No
 
-   goto, Cord
+   goto, Cord 
 
   GuiControl,, xx, %XXX%
 

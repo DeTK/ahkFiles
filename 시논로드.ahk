@@ -1,4 +1,4 @@
-;·Îµå
+ï»¿;ë¡œë“œ
 #IfWinActive Warcraft III
 SetBatchLines -1
 
@@ -6,31 +6,31 @@ F3::
 send {Enter}{vk15}-load
 return
 
-;ÀÚ»ì
+;ìì‚´
 F4::
 sendinput {Enter}-wktkf{Enter}
 gosub sleep
 return
 
-;¸»Æ¼¿¤
+;ë§í‹°ì—˜
 F5::
 sendinput {Enter}-akfxldpf{Enter}
 gosub sleep
 return
 
-;½ºÆÄÀÌ´õ
+;ìŠ¤íŒŒì´ë”
 F6::
 sendinput {Enter}-tmvkdlej{Enter}
 gosub sleep
 return
 
-;ÁÖ»çÀ§
+;ì£¼ì‚¬ìœ„
 F7::
 sendinput {Enter}-wntkdnl{Enter}
 gosub sleep
 return
 
-;Á¶ÇÕ
+;ì¡°í•©
 F8::
 sendinput {Enter}-whgkq{Enter}
 gosub sleep
@@ -39,6 +39,6 @@ return
 sleep:
 sleep 1
 
-;Á¾·á
+;ì¢…ë£Œ
 F9::
 Exitapp
