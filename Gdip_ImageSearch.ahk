@@ -17,53 +17,53 @@
 ;
 ; ++ PARAMETERS ++
 ;
-; pBitmapHaystack and pBitmapNeedle
-;   Self-explanatory bitmap pointers, are the only required parameters
+; pBitmapHaystack(찾고자 하는 화면) and pBitmapNeedle(찾고자하는 이미지)
+;   자명 한 비트 맵 포인터는 유일한 필수 매개 변수입니다.
 ;
-; OutputList
-;   ByRef variable to store the list of coordinates where a match was found
+; OutputList(찾은 좌표가 출력되는 곳)
+;   일치가 발견 된 좌표 목록을 저장하는 ByRef 변수
 ;
-; OuterX1, OuterY1, OuterX2, OuterY2
-;   Equivalent to ImageSearch's X1,Y1,X2,Y2
-;   Default: 0 for all (which searches the whole haystack area)
+; OuterX1, OuterY1, OuterX2, OuterY2 안된다고함
+;   ImageSearch의 X1, Y1, X2, Y2와 같습니다.
+;   기본값 : 모두 (모든 건초 더미 지역을 검색합니다)
 ;
-; Variation
-;   Just like ImageSearch, a value from 0 to 255
-;   Default: 0
+; Variation (색의 오차값)
+;   ImageSearch와 마찬가지로 0에서 255 사이의 값
+;   기본값 : 0
 ;
-; Trans
-;   Needle RGB transparent color, should be a numerical value from 0 to 0xFFFFFF
-;   Default: blank (does not use transparency)
+; Trans (특정 색을 투명화 시키고자)
+;   바늘 RGB 투명 색상은 0에서 0xFFFFFF 사이의 숫자 값이어야합니다.
+;   기본값 : 공백 (투명도를 사용하지 않음)
 ;
-; SearchDirection
+; SearchDirection (검색 방향)
 ;   Haystack search direction
-;     Vertical preference:
-;       1 = top->left->right->bottom [default]
-;       2 = bottom->left->right->top
-;       3 = bottom->right->left->top
-;       4 = top->right->left->bottom
-;     Horizontal preference:
-;       5 = left->top->bottom->right
-;       6 = left->bottom->top->right
-;       7 = right->bottom->top->left
-;       8 = right->top->bottom->left
+;     세로 기본 설정:
+;       1 = 좌상 → 우하 ↖↘ [기본값]
+;       2 = 좌하 → 우상 ↙↗
+;       3 = 우하 → 좌상 ↘↖
+;       4 = 우상 → 좌하 ↗↙
+;     가로 방향 환경 설정:
+;       5 = 좌상 → 우하 ↖↘
+;       6 = 좌하 → 우상 ↙↗
+;       7 = 우하 → 좌상 ↘↖
+;       8 = 우상 → 좌하 ↗↙
 ;
-; Instances
+; Instances (서치하고자 하는 이미지의 갯수)
 ;   Maximum number of instances to find when searching (0 = find all)
 ;   Default: 1 (stops after one match is found)
 ;
-; LineDelim and CoordDelim
+; LineDelim (outputlist로 출력되는 좌표를 어떻게 나타낼 지 결정) and CoordDelim (출력되는 좌표의 x좌표와 y좌표의 구분)
 ;   Outer and inner delimiters for the list of coordinates (OutputList)
 ;   Defaults: "`n" and ","
 ;
 ; ++ RETURN VALUES ++
 ;
-; -1001 ==> invalid haystack and/or needle bitmap pointer
-; -1002 ==> invalid variation value
-; -1003 ==> X1 and Y1 cannot be negative
-; -1004 ==> unable to lock haystack bitmap bits
-; -1005 ==> unable to lock needle bitmap bits
-; any non-negative value ==> the number of instances found
+; -1001 ==> 잘못된 건초 더미 및 / 또는 바늘 비트 맵 포인터
+; -1002 ==> 변동 값이 유효하지 않음
+; -1003 ==> X1과 Y1은 ​​음수 일 수 없습니다.
+; -1004 ==> 건초 스택 비트 맵 비트를 잠그지 못함
+; -1005 ==> 니들 비트 맵 비트를 잠그지 못함
+; any non-negative value ==> 발견 된 인스턴스의 수
 ;
 ;==================================================================================
 ;
@@ -73,7 +73,7 @@ Gdip_ImageSearch(pBitmapHaystack,pBitmapNeedle,ByRef OutputList=""
 ,OuterX1=0,OuterY1=0,OuterX2=0,OuterY2=0,Variation=0,Trans=""
 ,SearchDirection=1,Instances=1,LineDelim="`n",CoordDelim=",") {
 
-    ; Some validations that can be done before proceeding any further
+    ; 더 진행하기 전에 수행 할 수있는 유효성 검사
     If !( pBitmapHaystack && pBitmapNeedle )
         Return -1001
     If Variation not between 0 and 255
@@ -85,23 +85,23 @@ Gdip_ImageSearch(pBitmapHaystack,pBitmapNeedle,ByRef OutputList=""
     If ( Instances < 0 )
         Instances := 0
 
-    ; Getting the dimensions and locking the bits [haystack]
+    ; 치수 가져 오기 및 비트 잠금 [haystack]
     Gdip_GetImageDimensions(pBitmapHaystack,hWidth,hHeight)
-    ; Last parameter being 1 says the LockMode flag is "READ only"
+    ; 마지막 매개 변수가 1이면 LockMode 플래그가 "READ 전용"
     If Gdip_LockBits(pBitmapHaystack,0,0,hWidth,hHeight,hStride,hScan,hBitmapData,1)
     OR !(hWidth := NumGet(hBitmapData,0))
     OR !(hHeight := NumGet(hBitmapData,4))
         Return -1004
 
-    ; Careful! From this point on, we must do the following before returning:
-    ; - unlock haystack bits
+    ; 꼼꼼한! 이 시점부터 반환하기 전에 다음을 수행해야합니다.
+    ; - 건초 더미 비트 잠금 해제
 
-    ; Getting the dimensions and locking the bits [needle]
+    ; 치수 얻기 및 비트 잠금 [바늘]
     Gdip_GetImageDimensions(pBitmapNeedle,nWidth,nHeight)
-    ; If Trans is correctly specified, create a backup of the original needle bitmap
-    ; and modify the current one, setting the desired color as transparent.
-    ; Also, since a copy is created, we must remember to dispose the new bitmap later.
-    ; This whole thing has to be done before locking the bits.
+    ; Trans가 올바르게 지정되면 원래 바늘 비트 맵의 ​​백업을 만듭니다.
+    ; 원하는 색상을 투명하게 설정하여 현재 색상을 수정하십시오.
+    ; 또한 복사본이 만들어지기 때문에 나중에 새 비트 맵을 저장해야합니다.
+    ; 비트를 잠그기 전에이 모든 작업을 수행해야합니다.
     If Trans between 0 and 0xFFFFFF
     {
         pOriginalBmpNeedle := pBitmapNeedle
@@ -110,9 +110,9 @@ Gdip_ImageSearch(pBitmapHaystack,pBitmapNeedle,ByRef OutputList=""
         DumpCurrentNeedle := true
     }
 
-    ; Careful! From this point on, we must do the following before returning:
-    ; - unlock haystack bits
-    ; - dispose current needle bitmap (if necessary)
+    ; 꼼꼼한! 이 시점부터 반환하기 전에 다음을 수행해야합니다.
+    ; - 건초 더미 비트 잠금 해제
+    ; - 현재 바늘 비트 맵 배치 (필요한 경우)
 
     If Gdip_LockBits(pBitmapNeedle,0,0,nWidth,nHeight,nStride,nScan,nBitmapData)
     OR !(nWidth := NumGet(nBitmapData,0))
@@ -124,14 +124,14 @@ Gdip_ImageSearch(pBitmapHaystack,pBitmapNeedle,ByRef OutputList=""
         Return -1005
     }
     
-    ; Careful! From this point on, we must do the following before returning:
-    ; - unlock haystack bits
-    ; - unlock needle bits
-    ; - dispose current needle bitmap (if necessary)
+    ; 꼼꼼한! 이 시점부터 반환하기 전에 다음을 수행해야합니다.
+    ; - 건초 더미 비트 잠금 해제
+    ; - 바늘 비트 잠금 해제
+    ; - 현재 바늘 비트 맵 배치 (필요한 경우)
 
-    ; Adjust the search box. "OuterX2,OuterY2" will be the last pixel evaluated
-    ; as possibly matching with the needle's first pixel. So, we must avoid going
-    ; beyond this maximum final coordinate.
+    ; 검색 창을 조정하십시오. "OuterX2, OuterY2"가 마지막으로 평가 된 픽셀이됩니다.
+    ; 니들의 첫 번째 픽셀과 일치하는 것 같습니다. 그래서, 우리는 가야합니다.
+    ; 이 최대 최종 좌표를 초과합니다.
     OuterX2 := ( !OuterX2 ? hWidth-nWidth+1 : OuterX2-nWidth+1 )
     OuterY2 := ( !OuterY2 ? hHeight-nHeight+1 : OuterY2-nHeight+1 )
 
@@ -406,7 +406,7 @@ Gdip_LockedBitsSearch(hStride,hScan,hWidth,hHeight,nStride,nScan,nWidth,nHeight
 {
     static _ImageSearch, Ptr, PtrA
 
-    ; Initialize all MCode stuff, if necessary
+    ; 필요한 경우 모든 MCode 초기화
     if !( _ImageSearch ) {
         Ptr := A_PtrSize ? "UPtr" : "UInt"
         PtrA := Ptr . "*"
@@ -556,28 +556,28 @@ Gdip_LockedBitsSearch(hStride,hScan,hWidth,hHeight,nStride,nScan,nWidth,nHeight
         DllCall("VirtualProtect", Ptr,&_ImageSearch, Ptr,VarSetCapacity(_ImageSearch), "uint",0x40, PtrA,0)
     }
 
-    ; Abort if an initial coordinates is located before a final coordinate
+    ; 초기 좌표가 최종 좌표 앞에 위치하면 중단합니다.
     If ( sx2 < sx1 )
         return -3001
     If ( sy2 < sy1 )
         return -3002
 
-    ; Check the search box. "sx2,sy2" will be the last pixel evaluated
-    ; as possibly matching with the needle's first pixel. So, we must
-    ; avoid going beyond this maximum final coordinate.
+    ; 검색 창을 확인하십시오. "sx2, sy2"가 마지막으로 평가 된 픽셀이됩니다.
+    ; 니들의 첫 번째 픽셀과 일치하는 것 같습니다. 그래서, 우리는
+    ; 이 최대 최종 좌표를 넘지 않도록하십시오.
     If ( sx2 > (hWidth-nWidth+1) )
         return -3003
     If ( sy2 > (hHeight-nHeight+1) )
         return -3004
 
-    ; Abort if the width or height of the search box is 0
+    ; 검색 상자의 너비 또는 높이가 0 인 경우 중단합니다.
     If ( sx2-sx1 == 0 )
         return -3005
     If ( sy2-sy1 == 0 )
         return -3006
 
-    ; The DllCall parameters are the same for easier C code modification,
-    ; even though they aren't all used on the _ImageSearch version
+    ; DllCall 매개 변수는 더 쉬운 C 코드 수정,
+    ; _ImageSearch 버전에서 모두 사용되지는 않지만
     x := 0, y := 0
     , E := DllCall( &_ImageSearch, "int*",x, "int*",y, Ptr,hScan, Ptr,nScan, "int",nWidth, "int",nHeight
     , "int",hStride, "int",nStride, "int",sx1, "int",sy1, "int",sx2, "int",sy2, "int",Variation
