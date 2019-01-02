@@ -39,7 +39,7 @@ Gui,Submit,Nohide
 IF F = 인터페이스
 {
 	Progress, B1 zh0 fs18 Center , 인터페이스선택  ;옵션,글꼴두깨,텍스트
-	Sleep, 250
+	Sleep, 2000
 	Progress, Off
 }
 IF F = 배경화면

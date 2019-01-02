@@ -10,7 +10,7 @@ CoordMode, Mouse, Relative
 #Persistent
 #KeyHistory 0
 #NoEnv
-#NoIcon
+;#NoIcon
 Sendmode, input
 
 ~s::

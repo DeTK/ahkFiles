@@ -1,11 +1,11 @@
-#NoEnv ;º¯¼ö¸íÀÌ È¯°æº¯¼öÀÎÁö Ã¼Å©ÇÏ´Â°É ¹«½Ã, ½ºÅ©¸³Æ® ¼Óµµ »ó½Â°ú È¯°æº¯¼ö È¥µ¿À¸·Î ÀÎÇÑ ¹ö±× ¹æÁö
-#Singleinstance Force ;½ºÅ©¸³Æ®¸¦ µ¿½Ã¿¡ ÇÑ°³¸¸ ½ÇÇà
-#Persistent ;ÇÖÅ°°¡ ¾ø´õ¶óµµ ½ºÅ©¸³Æ® ½ÇÇàÀ» À¯Áö
-SetBatchLines,-1 ;¶óÀÎ°£ µô·¹ÀÌ¸¦ ¾ø¾Ö¼­ ¼Óµµ »ó½Â
-ListLines, Off ;½ºÅ©¸³Æ®°¡ ÃÖ±Ù ½ÇÇàÇÑ Ä¿¸Çµå Ç¥½Ã ¾ÈÇÔ = ½ºÅ©¸³Æ® ¼Óµµ »ó½Â
-CoordMode, Pixel, Relative ;ÇÈ¼¿ À§Ä¡ ±âÁØÀ» »ó´ë ÁÂÇ¥·Î Á¤ÇÔ
-CoordMode, Mouse, Relative ;¸¶¿ì½º À§Ä¡ ±âÁØÀ» »ó´ë ÁÂÇ¥·Î Á¤ÇÔ
-SetTitleMatchMode, 2 ;Å¸ÀÌÆ² ¸ÅÄ¡ ¸ğµå¸¦ 2·Î ¼³Á¤ = Ã¢ Á¦¸ñ ÀÌ¸§À» ÀÏºÎ¸¸ ¸Â¾Æµµ Àû¿ë
+ï»¿#NoEnv ;ë³€ìˆ˜ëª…ì´ í™˜ê²½ë³€ìˆ˜ì¸ì§€ ì²´í¬í•˜ëŠ”ê±¸ ë¬´ì‹œ, ìŠ¤í¬ë¦½íŠ¸ ì†ë„ ìƒìŠ¹ê³¼ í™˜ê²½ë³€ìˆ˜ í˜¼ë™ìœ¼ë¡œ ì¸í•œ ë²„ê·¸ ë°©ì§€
+#Singleinstance Force ;ìŠ¤í¬ë¦½íŠ¸ë¥¼ ë™ì‹œì— í•œê°œë§Œ ì‹¤í–‰
+#Persistent ;í•«í‚¤ê°€ ì—†ë”ë¼ë„ ìŠ¤í¬ë¦½íŠ¸ ì‹¤í–‰ì„ ìœ ì§€
+SetBatchLines,-1 ;ë¼ì¸ê°„ ë”œë ˆì´ë¥¼ ì—†ì• ì„œ ì†ë„ ìƒìŠ¹
+ListLines, Off ;ìŠ¤í¬ë¦½íŠ¸ê°€ ìµœê·¼ ì‹¤í–‰í•œ ì»¤ë§¨ë“œ í‘œì‹œ ì•ˆí•¨ = ìŠ¤í¬ë¦½íŠ¸ ì†ë„ ìƒìŠ¹
+CoordMode, Pixel, Relative ;í”½ì…€ ìœ„ì¹˜ ê¸°ì¤€ì„ ìƒëŒ€ ì¢Œí‘œë¡œ ì •í•¨
+CoordMode, Mouse, Relative ;ë§ˆìš°ìŠ¤ ìœ„ì¹˜ ê¸°ì¤€ì„ ìƒëŒ€ ì¢Œí‘œë¡œ ì •í•¨
+SetTitleMatchMode, 2 ;íƒ€ì´í‹€ ë§¤ì¹˜ ëª¨ë“œë¥¼ 2ë¡œ ì„¤ì • = ì°½ ì œëª© ì´ë¦„ì„ ì¼ë¶€ë§Œ ë§ì•„ë„ ì ìš©
 ;WinGetActiveTitle
 
 
@@ -39,11 +39,11 @@ ImmGetDefaultIMEWnd(hWnd)
 F2::Pause
 F1::
 Sendinput ^!+s
-Winwait À¥¿ëÀ¸·Î ÀúÀå
+Winwait ì›¹ìš©ìœ¼ë¡œ ì €ì¥
 Send input {Enter}
-winwait ÃÖÀûÈ­ ´Ù¸¥ ÀÌ¸§À¸·Î ÀúÀå
+winwait ìµœì í™” ë‹¤ë¥¸ ì´ë¦„ìœ¼ë¡œ ì €ì¥
 Sendinput {Enter}
-Winwait ÆÄÀÏ ´ëÃ¼,,0
+Winwait íŒŒì¼ ëŒ€ì²´,,0
 IF ErrorLevel = 0
 {
 	Sendinput {Enter}
@@ -51,19 +51,19 @@ IF ErrorLevel = 0
 IF ErrorLevel = 1
 {
 }
-Winwaitclose À¥¿ëÀ¸·Î ÀúÀå
+Winwaitclose ì›¹ìš©ìœ¼ë¡œ ì €ì¥
 Sendinput ^0
-winwait ¼±ÅÃ ¿µ¿ª ºÒ·¯¿À±â
-Winwaitclose ¼±ÅÃ ¿µ¿ª ºÒ·¯¿À±â
-Sendinput ^f ;ÀÚ¸£±â
-Sendinput ^b ;ºü¸¥³»º¸³»±â
-Winwait ´Ù¸¥ ÀÌ¸§À¸·Î ÀúÀå
+winwait ì„ íƒ ì˜ì—­ ë¶ˆëŸ¬ì˜¤ê¸°
+Winwaitclose ì„ íƒ ì˜ì—­ ë¶ˆëŸ¬ì˜¤ê¸°
+Sendinput ^f ;ìë¥´ê¸°
+Sendinput ^b ;ë¹ ë¥¸ë‚´ë³´ë‚´ê¸°
+Winwait ë‹¤ë¥¸ ì´ë¦„ìœ¼ë¡œ ì €ì¥
 sleep 200
-Send in6.png ;ÆÄÀÏÀÌ¸§
+Send in6.png ;íŒŒì¼ì´ë¦„
 sleep 200
 sendinput {Enter}
 sleep 200
-Winwait ´Ù¸¥ ÀÌ¸§À¸·Î ÀúÀå È®ÀÎ,,0
+Winwait ë‹¤ë¥¸ ì´ë¦„ìœ¼ë¡œ ì €ì¥ í™•ì¸,,0
 IF ErrorLevel = 0
 {
 	Sendinput y
@@ -72,21 +72,21 @@ IF ErrorLevel = 1
 {
 }
 sleep 1500
-sendinput ^!z ;½ÇÇàÃë¼Ò
-sendinput ^!z ;½ÇÇàÃë¼Ò
+sendinput ^!z ;ì‹¤í–‰ì·¨ì†Œ
+sendinput ^!z ;ì‹¤í–‰ì·¨ì†Œ
 Sendinput ^0
 Pause
 Sendinput m
-Winwaitclose ¼±ÅÃ ¿µ¿ª ºÒ·¯¿À±â
-Sendinput ^f ;ÀÚ¸£±â
-Sendinput ^b ;ºü¸¥³»º¸³»±â
-Winwait ´Ù¸¥ ÀÌ¸§À¸·Î ÀúÀå
+Winwaitclose ì„ íƒ ì˜ì—­ ë¶ˆëŸ¬ì˜¤ê¸°
+Sendinput ^f ;ìë¥´ê¸°
+Sendinput ^b ;ë¹ ë¥¸ë‚´ë³´ë‚´ê¸°
+Winwait ë‹¤ë¥¸ ì´ë¦„ìœ¼ë¡œ ì €ì¥
 sleep 200
-Send in5.png ;ÆÄÀÏÀÌ¸§
+Send in5.png ;íŒŒì¼ì´ë¦„
 sleep 200
 sendinput {enter}
 sleep 200
-Winwait ´Ù¸¥ ÀÌ¸§À¸·Î ÀúÀå È®ÀÎ,,0
+Winwait ë‹¤ë¥¸ ì´ë¦„ìœ¼ë¡œ ì €ì¥ í™•ì¸,,0
 IF ErrorLevel = 0
 {
 	Sendinput y
@@ -95,6 +95,6 @@ IF ErrorLevel = 1
 {
 }
 sleep 1500
-sendinput ^!z ;½ÇÇàÃë¼Ò
-sendinput ^!z ;½ÇÇàÃë¼Ò
+sendinput ^!z ;ì‹¤í–‰ì·¨ì†Œ
+sendinput ^!z ;ì‹¤í–‰ì·¨ì†Œ
 Exitapp

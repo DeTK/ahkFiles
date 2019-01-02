@@ -1,11 +1,11 @@
-#NoEnv ;º¯¼ö¸íÀÌ È¯°æº¯¼öÀÎÁö Ã¼Å©ÇÏ´Â°É ¹«½Ã, ½ºÅ©¸³Æ® ¼Óµµ »ó½Â°ú È¯°æº¯¼ö È¥µ¿À¸·Î ÀÎÇÑ ¹ö±× ¹æÁö
-#Singleinstance Force ;½ºÅ©¸³Æ®¸¦ µ¿½Ã¿¡ ÇÑ°³¸¸ ½ÇÇà
-#Persistent ;ÇÖÅ°°¡ ¾ø´õ¶óµµ ½ºÅ©¸³Æ® ½ÇÇàÀ» À¯Áö
-SetBatchLines,-1 ;¶óÀÎ°£ µô·¹ÀÌ¸¦ ¾ø¾Ö¼­ ¼Óµµ »ó½Â
-ListLines, Off ;½ºÅ©¸³Æ®°¡ ÃÖ±Ù ½ÇÇàÇÑ Ä¿¸Çµå Ç¥½Ã ¾ÈÇÔ = ½ºÅ©¸³Æ® ¼Óµµ »ó½Â
-CoordMode, Pixel, Relative ;ÇÈ¼¿ À§Ä¡ ±âÁØÀ» »ó´ë ÁÂÇ¥·Î Á¤ÇÔ
-CoordMode, Mouse, Relative ;¸¶¿ì½º À§Ä¡ ±âÁØÀ» »ó´ë ÁÂÇ¥·Î Á¤ÇÔ
-SetTitleMatchMode, 2 ;Å¸ÀÌÆ² ¸ÅÄ¡ ¸ğµå¸¦ 2·Î ¼³Á¤ = Ã¢ Á¦¸ñ ÀÌ¸§À» ÀÏºÎ¸¸ ¸Â¾Æµµ Àû¿ë
+ï»¿#NoEnv ;ë³€ìˆ˜ëª…ì´ í™˜ê²½ë³€ìˆ˜ì¸ì§€ ì²´í¬í•˜ëŠ”ê±¸ ë¬´ì‹œ, ìŠ¤í¬ë¦½íŠ¸ ì†ë„ ìƒìŠ¹ê³¼ í™˜ê²½ë³€ìˆ˜ í˜¼ë™ìœ¼ë¡œ ì¸í•œ ë²„ê·¸ ë°©ì§€
+#Singleinstance Force ;ìŠ¤í¬ë¦½íŠ¸ë¥¼ ë™ì‹œì— í•œê°œë§Œ ì‹¤í–‰
+#Persistent ;í•«í‚¤ê°€ ì—†ë”ë¼ë„ ìŠ¤í¬ë¦½íŠ¸ ì‹¤í–‰ì„ ìœ ì§€
+SetBatchLines,-1 ;ë¼ì¸ê°„ ë”œë ˆì´ë¥¼ ì—†ì• ì„œ ì†ë„ ìƒìŠ¹
+ListLines, Off ;ìŠ¤í¬ë¦½íŠ¸ê°€ ìµœê·¼ ì‹¤í–‰í•œ ì»¤ë§¨ë“œ í‘œì‹œ ì•ˆí•¨ = ìŠ¤í¬ë¦½íŠ¸ ì†ë„ ìƒìŠ¹
+CoordMode, Pixel, Relative ;í”½ì…€ ìœ„ì¹˜ ê¸°ì¤€ì„ ìƒëŒ€ ì¢Œí‘œë¡œ ì •í•¨
+CoordMode, Mouse, Relative ;ë§ˆìš°ìŠ¤ ìœ„ì¹˜ ê¸°ì¤€ì„ ìƒëŒ€ ì¢Œí‘œë¡œ ì •í•¨
+SetTitleMatchMode, 2 ;íƒ€ì´í‹€ ë§¤ì¹˜ ëª¨ë“œë¥¼ 2ë¡œ ì„¤ì • = ì°½ ì œëª© ì´ë¦„ì„ ì¼ë¶€ë§Œ ë§ì•„ë„ ì ìš©
 #KeyHistory 0 
 Process, Priority,, High
 #Hotstring NoMouse
@@ -13,163 +13,163 @@ ret:=0
 SetKeyDelay,0,0,play
 Blockinput, SendAndMouse
 F1::
-ifwinactive,BLP??ïñ?
+ifwinactive,BLP??ç²¾?
 	gosub,1
 else
 	return
 
-;¾ğµ¥µå1¹ø
+;ì–¸ë°ë“œ1ë²ˆ
 1:
 sendinput,c
-sleep,300 ;ÀúÀå´ÙÀ½½½¸³
+sleep,300 ;ì €ì¥ë‹¤ìŒìŠ¬ë¦½
 sendinput,UndeadUITile01.blp
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,{Enter}
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,y
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,100
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,{Enter}
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,{Enter}
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 
 ;------------------------------------------------------------------------------------
 
-;2¹øÆÄÀÏºÒ·¯¿À±â
+;2ë²ˆíŒŒì¼ë¶ˆëŸ¬ì˜¤ê¸°
 
 sendinput,o
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,2.png
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 send,{Enter}
 sleep,650
 
-;¾ğµ¥µå2¹ø
+;ì–¸ë°ë“œ2ë²ˆ
 
 sendinput,c
-sleep,300 ;ÀúÀå´ÙÀ½½½¸³
+sleep,300 ;ì €ì¥ë‹¤ìŒìŠ¬ë¦½
 sendinput,UndeadUITile02.blp
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,{Enter}
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,y
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,100
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,{Enter}
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,{Enter}
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 
 ;------------------------------------------------------------------------------------
 
-;3¹øÆÄÀÏºÒ·¯¿À±â
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+;3ë²ˆíŒŒì¼ë¶ˆëŸ¬ì˜¤ê¸°
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,o
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,3.png
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 send,{Enter}
 sleep,650
 
 
-;¾ğµ¥µå3¹ø
+;ì–¸ë°ë“œ3ë²ˆ
 
 sendinput,c
-sleep,300 ;ÀúÀå´ÙÀ½½½¸³
+sleep,300 ;ì €ì¥ë‹¤ìŒìŠ¬ë¦½
 sendinput,UndeadUITile03.blp
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,{Enter}
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,y
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,100
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,{Enter}
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,{Enter}
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 ;------------------------------------------------------------------------------------
 
-;4¹øÆÄÀÏºÒ·¯¿À±â
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+;4ë²ˆíŒŒì¼ë¶ˆëŸ¬ì˜¤ê¸°
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,o
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,4.png
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 send,{Enter}
 sleep,650
 
-;¾ğµ¥µå4¹ø
+;ì–¸ë°ë“œ4ë²ˆ
 
 sendinput,c
-sleep,300 ;ÀúÀå´ÙÀ½½½¸³
+sleep,300 ;ì €ì¥ë‹¤ìŒìŠ¬ë¦½
 sendinput,UndeadUITile04.blp
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,{Enter}
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,y
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,100
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,{Enter}
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,{Enter}
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 ;------------------------------------------------------------------------------------
 
-;5¹øÆÄÀÏºÒ·¯¿À±â
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+;5ë²ˆíŒŒì¼ë¶ˆëŸ¬ì˜¤ê¸°
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,o
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,5.png
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 send,{Enter}
 sleep,650
 
-;¾ğµ¥µå5¹ø
+;ì–¸ë°ë“œ5ë²ˆ
 
 sendinput,c
-sleep,300 ;ÀúÀå´ÙÀ½½½¸³
+sleep,300 ;ì €ì¥ë‹¤ìŒìŠ¬ë¦½
 sendinput,UndeadUITile-InventoryCover.blp
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,{Enter}
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,y
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,100
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,{Enter}
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,{Enter}
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 ;------------------------------------------------------------------------------------
 
-;6¹øÆÄÀÏºÒ·¯¿À±â
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+;6ë²ˆíŒŒì¼ë¶ˆëŸ¬ì˜¤ê¸°
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,o
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,6.png
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 send,{Enter}
 sleep,650
 
-;¾ğµ¥µå6¹ø
+;ì–¸ë°ë“œ6ë²ˆ
 
 sendinput,c
-sleep,300 ;ÀúÀå´ÙÀ½½½¸³
+sleep,300 ;ì €ì¥ë‹¤ìŒìŠ¬ë¦½
 sendinput,UndeadUITile-TimeIndicatorFrame.blp
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,{Enter}
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,y
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,100
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,{Enter}
-sleep,300 ;Àü¹İÀûÀÎ ½½¸³
+sleep,300 ;ì „ë°˜ì ì¸ ìŠ¬ë¦½
 sendinput,{Enter}
 exitapp
 F3::

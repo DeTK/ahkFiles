@@ -1,4 +1,4 @@
-#SingleInstance force
+ï»¿#SingleInstance force
 #Hotstring NoMouse
 #IfWinActive Warcraft III
 SetKeyDelay -1, -1
@@ -15,22 +15,22 @@ FileChanged:
 Gui, Submit, NoHide
 msgbox,%FileSelected%
 Linum=4
-FileReadLine, List, %FileSelected%.txt, %Linum%        ; ÁÂÇ¥.txt ÆÄÀÏ¾ÈÀÇ %Linum%¹øÂ° ÁÙÀ» ÀĞ¾î¼­ Listº¯¼ö¿¡ ÀúÀå. 
-StringGetPos,pos,List,:,                ; Listº¯¼ö¿¡¼­ commaÀÇ À§Ä¡¸¦ pos¿¡ ÀúÀå. 
-SearchY:=pos+2                          ; pos+2¸¦ SearchY¿¡ ´ëÀÔ. 
-                                        ; ( ÄŞ¸¶ ¿À¸¥ÂÊ¿¡ ÀÖ´Â ¼ıÀÚµéÀ» ÀĞ±âÀ§ÇØ) 
+FileReadLine, List, %FileSelected%.txt, %Linum%        ; ì¢Œí‘œ.txt íŒŒì¼ì•ˆì˜ %Linum%ë²ˆì§¸ ì¤„ì„ ì½ì–´ì„œ Listë³€ìˆ˜ì— ì €ì¥. 
+StringGetPos,pos,List,:,                ; Listë³€ìˆ˜ì—ì„œ commaì˜ ìœ„ì¹˜ë¥¼ posì— ì €ì¥. 
+SearchY:=pos+2                          ; pos+2ë¥¼ SearchYì— ëŒ€ì…. 
+                                        ; ( ì½¤ë§ˆ ì˜¤ë¥¸ìª½ì— ìˆëŠ” ìˆ«ìë“¤ì„ ì½ê¸°ìœ„í•´) 
 
-StringLeft, mx, List, %Pos%              ;ListÀÇ %Pos% À§Ä¡ÀÇ ¿ŞÂÊ ¹®ÀÚ¿­À» mx¿¡ ÀúÀå. 
-StringMid, my, List, %SearchY%,      ;ListÀÇ %SearchY%À§Ä¡ºÎÅÍ 2±ÛÀÚÀÇ ¹®ÀÚ¿­À» my¿¡ ÀúÀå. 
+StringLeft, mx, List, %Pos%              ;Listì˜ %Pos% ìœ„ì¹˜ì˜ ì™¼ìª½ ë¬¸ìì—´ì„ mxì— ì €ì¥. 
+StringMid, my, List, %SearchY%,      ;Listì˜ %SearchY%ìœ„ì¹˜ë¶€í„° 2ê¸€ìì˜ ë¬¸ìì—´ì„ myì— ì €ì¥. 
 StringTrimRight,my,my,4
 Code1=%my%    
 Linum=5
-FileReadLine, List, %FileSelected%.txt, %Linum%        ; ÁÂÇ¥.txt ÆÄÀÏ¾ÈÀÇ %Linum%¹øÂ° ÁÙÀ» ÀĞ¾î¼­ Listº¯¼ö¿¡ ÀúÀå. 
-StringGetPos,pos,List,:,                ; Listº¯¼ö¿¡¼­ commaÀÇ À§Ä¡¸¦ pos¿¡ ÀúÀå. 
-SearchY:=pos+2                          ; pos+2¸¦ SearchY¿¡ ´ëÀÔ. 
-                                        ; ( ÄŞ¸¶ ¿À¸¥ÂÊ¿¡ ÀÖ´Â ¼ıÀÚµéÀ» ÀĞ±âÀ§ÇØ) 
-StringLeft, mx, List, %Pos%            ;ListÀÇ %Pos% À§Ä¡ÀÇ ¿ŞÂÊ ¹®ÀÚ¿­À» mx¿¡ ÀúÀå. 
-StringMid, my, List, %SearchY%,      ;ListÀÇ %SearchY%À§Ä¡ºÎÅÍ 2±ÛÀÚÀÇ ¹®ÀÚ¿­À» my¿¡ ÀúÀå. 
+FileReadLine, List, %FileSelected%.txt, %Linum%        ; ì¢Œí‘œ.txt íŒŒì¼ì•ˆì˜ %Linum%ë²ˆì§¸ ì¤„ì„ ì½ì–´ì„œ Listë³€ìˆ˜ì— ì €ì¥. 
+StringGetPos,pos,List,:,                ; Listë³€ìˆ˜ì—ì„œ commaì˜ ìœ„ì¹˜ë¥¼ posì— ì €ì¥. 
+SearchY:=pos+2                          ; pos+2ë¥¼ SearchYì— ëŒ€ì…. 
+                                        ; ( ì½¤ë§ˆ ì˜¤ë¥¸ìª½ì— ìˆëŠ” ìˆ«ìë“¤ì„ ì½ê¸°ìœ„í•´) 
+StringLeft, mx, List, %Pos%            ;Listì˜ %Pos% ìœ„ì¹˜ì˜ ì™¼ìª½ ë¬¸ìì—´ì„ mxì— ì €ì¥. 
+StringMid, my, List, %SearchY%,      ;Listì˜ %SearchY%ìœ„ì¹˜ë¶€í„° 2ê¸€ìì˜ ë¬¸ìì—´ì„ myì— ì €ì¥. 
 StringTrimLeft,mx,mx,16
 StringTrimRight,my,my,4
 if mx=Code2
@@ -58,7 +58,7 @@ ReadFiles( pattern, folders=0, recurse=0) {
     Return FileList
 }
 
-; ¿©±â±îÁö  ÆÄÀÏ ¼±ÅÃ ºÎºĞ
+; ì—¬ê¸°ê¹Œì§€  íŒŒì¼ ì„ íƒ ë¶€ë¶„
 
 
 
@@ -68,7 +68,7 @@ return
 
 
 
-:*B0:123123`n::                 ;¿©±âºÎÅÍ ¸ÅÅ©·Î ºÎºĞ À§¿¡ ³»¿ëÀº ÅØ½ºÆ® ÆÄÀÏ ºĞ¼®ÇØ¼­ º¯¼ö ÁöÁ¤½ÃÅ°°í ÆÄÀÏ¸ñ·Ï ºÒ·¯¿À´Â³»¿ë
+:*B0:123123`n::                 ;ì—¬ê¸°ë¶€í„° ë§¤í¬ë¡œ ë¶€ë¶„ ìœ„ì— ë‚´ìš©ì€ í…ìŠ¤íŠ¸ íŒŒì¼ ë¶„ì„í•´ì„œ ë³€ìˆ˜ ì§€ì •ì‹œí‚¤ê³  íŒŒì¼ëª©ë¡ ë¶ˆëŸ¬ì˜¤ëŠ”ë‚´ìš©
 sendinput,{Enter}
 sendinput,{Enter}
 sendinput,{vk15}-load
