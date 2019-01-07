@@ -1,16 +1,32 @@
-ï»¿;$OBFUSCATOR: $FUNCS_CHANGE_DEFAULTS: ,, -1
+obf_copyright := " Date: ¿ÀÈÄ 2:40 2019³â 1¿ù 4ÀÏ ±Ý¿äÀÏ                  "
+obf_copyright := "                                                "
+obf_copyright := " THE FOLLOWING AUTOHOTKEY SCRIPT WAS OBFUSCATED "
+obf_copyright := " BY DYNAMIC OBFUSCATER FOR AUTOHOTKEY           "
+obf_copyright := "                                                "
+obf_copyright := " Copyright (C) 2011-2013  David Malia           "
+obf_copyright := " DYNAMIC OBFUSCATER is released under           "
+obf_copyright := " the Open Source GPL License                    "
+
+
+;AUTOEXECUTE ORIGINAL NAME: autoexecute
+;autoexecute
+;$OBFUSCATOR: $FUNCS_CHANGE_DEFAULTS: ,, -1
+
 ;$OBFUSCATOR: $PARAMS_CHANGE_DEFAULTS: ,, -1
+
 ;$OBFUSCATOR: $LABELS_CHANGE_DEFAULTS: ,, -1
+
 ;$OBFUSCATOR: $GLOBVARS_CHANGE_DEFAULTS: ,, -1
+
 ;$OBFUSCATOR: $LOSVARS_CHANGE_DEFAULTS: ,, -1 
-
-
 
 
 OnMessage(0x20a, "WM_MOUSEWHEEL")
 OnMessage(0x203, "WM_LBUTTONDBLCLK")
 
-
+#Include MyLib.ahk
+#Include Gdip.ahk
+#Include Gdip_ImageSearch.ahk
 #ErrorStdOut
 #SingleInstance Force
 #Hotstring NoMouse
@@ -38,18 +54,18 @@ global G_Title :=
 
 Gui, +hwndhMyGUI
 Gui, +AlwaysOnTop +Owner -SysMenu
-Gui, Add, Button, x150 y5 w60 h20 gGuiClose, ë‹«ê¸°
-Gui, Add, Button, xp+60 yp w60 h20, ì»¨íŠ¸ë¡¤
+Gui, Add, Button, x150 y5 w60 h20 gkffff@f%k#k#f@kff@ffk#fkk#%@%k#f@kfk#f@kffk%fkf%fkk#ffk#f@fkfkf@kff@k#%@k#ffkffkf@k#kf, ´Ý±â
+Gui, Add, Button, xp+60 yp w60 h20, ÄÁÆ®·Ñ
  
-Gui, Add, Tab2,x5 y5 w325, ì´ë¯¸ì§€ì°¾ê¸°|ë‹¤ìŒ
+Gui, Add, Tab2,x5 y5 w325, ÀÌ¹ÌÁöÃ£±â|´ÙÀ½
 
-Gui, Add, Button, x11 y31 w60 h22, ì°½ì„ íƒ
+Gui, Add, Button, x11 y31 w60 h22, Ã¢¼±ÅÃ
 Gui, Add, Edit, xp+1 yp+26 w300 h20 0x800,
-Gui, Add, Button, xp-1 yp+24 w60 h22 Disabled, íŒŒì¼ì„ íƒ
+Gui, Add, Button, xp-1 yp+24 w60 h22 Disabled, ÆÄÀÏ¼±ÅÃ
 Gui, Add, Text, xp+100 yp+6 w200 h15,
 Gui, Add, Edit, xp-99 yp+20 w300 h20 0x800,
-Gui, Add, Button, xp-1 yp+24 w60 h22 Disabled, ê²€ìƒ‰
-;Gui, Add, StatusBar,, ìƒíƒœë°”ì´ë‹¤
+Gui, Add, Button, xp-1 yp+24 w60 h22 Disabled, °Ë»ö
+;Gui, Add, StatusBar,, »óÅÂ¹ÙÀÌ´Ù
 Gui, Show, x1400 w350, >
 OnMessage(0x201, "cl")
 OnMessage(0x202, "cl")
@@ -60,7 +76,7 @@ cl(wParam, lParam, message, hwnd)
 	MouseGetPos,,,, Gui
 	if (Gui == "Edit1" || Gui == "Edit2")
 	{
-		ToolTip, ë¬´ì‹œí•˜ë¼ê³ 
+		ToolTip, ¹«½ÃÇÏ¶ó°í
 		return
 	}
 }
@@ -68,17 +84,17 @@ cl(wParam, lParam, message, hwnd)
 WM_LBUTTONDBLCLK(wParam, lParam, message, hwnd)
 {
 	MouseGetPos,,,, Gui
-	if (Gui == "Edit1" && G_Title) ; ì»¨íŠ¸ë¡¤ì´ë¦„ì´ Edit1ì´ë©´ì„œ G_Titleê°€ ì•ˆë¹„ì–´ì ¸ ìžˆì„ë•Œ
+	if (Gui == "Edit1" && G_Title) ; ÄÁÆ®·ÑÀÌ¸§ÀÌ Edit1ÀÌ¸é¼­ G_Title°¡ ¾Èºñ¾îÁ® ÀÖÀ»¶§
 	{
 		Clipboard := G_Title
-		ToolTip, íƒ€ì´í‹€ ë³µì‚¬ë¨
+		ToolTip, Å¸ÀÌÆ² º¹»çµÊ
 		Sleep, 500
 		ToolTip
 	}
 	else if (Gui == "Edit2" && G_File)
 	{
 		Clipboard := G_File
-		ToolTip, íŒŒì¼ëª… ë³µì‚¬ë¨
+		ToolTip, ÆÄÀÏ¸í º¹»çµÊ
 		Sleep, 500
 		ToolTip
 	}
@@ -88,7 +104,7 @@ WM_LBUTTONDBLCLK(wParam, lParam, message, hwnd)
 
 
 
-Buttonì»¨íŠ¸ë¡¤:
+ButtonÄÁÆ®·Ñ:
 if (flag := !flag)
 	OnMessage(0x200, "WM_MOUSEMOVE")
 else
@@ -109,18 +125,18 @@ WM_MOUSEWHEEL(wParam, lParam, message, hwnd)
 {
 	;ToolTip, % wParam " " lParam " " message " " hwnd " " Gui
 	MouseGetPos,,,, Gui
-	if (Gui == "Button5" && G_List) ; í˜„ìž¬ ì»¨íŠ¸ë¡¤ì˜ ì´ë¦„ ë¦¬ìŠ¤íŠ¸ê°€ ë¹ˆê°’ì´ ì•„ë‹ë•Œ
+	if (Gui == "Button5" && G_List) ; ÇöÀç ÄÁÆ®·ÑÀÇ ÀÌ¸§ ¸®½ºÆ®°¡ ºó°ªÀÌ ¾Æ´Ò¶§
 	{
 		Create_GDI()
 		GetKeyState, key, LAlt, P
-		if (wParam == 7864320) ; íœ  ì˜¬ë¦¼
+		if (wParam == 7864320) ; ÈÙ ¿Ã¸²
 		{
 			if (key == "D")
 				G_Num -= 10
 			else
 				G_Num--
 		}
-		else if (wParam == 4287102976) ; íœ  ë‚´ë¦¼
+		else if (wParam == 4287102976) ; ÈÙ ³»¸²
 		{
 			if (key == "D")
 				G_Num += 10
@@ -140,21 +156,21 @@ WM_MOUSEWHEEL(wParam, lParam, message, hwnd)
 
 
 
-Buttonì°½ì„ íƒ:
-Gui, Show,, > ì›í•˜ëŠ”ì°½ ì„ íƒí›„ ìŠ¤íŽ˜ì´ìŠ¤ë¥¼ ëˆŒë ¤ì£¼ì„¸ìš”
-Block_Hotkey("Space") ; í•´ë‹¹í‚¤ê°€ ëˆŒë ¤ì•¼ ë‹¤ìŒìœ¼ë¡œ ì§„í–‰
-G_Hwnd := WinExist("A") ; í˜„ìž¬ í™œì„±í™”ëœ ì°½ì˜ ê³ ìœ ì•„ì´ë””ë¥¼ ê°€ì ¸ì˜¨ë‹¤.
+ButtonÃ¢¼±ÅÃ:
+Gui, Show,, > ¿øÇÏ´ÂÃ¢ ¼±ÅÃÈÄ ½ºÆäÀÌ½º¸¦ ´­·ÁÁÖ¼¼¿ä
+Block_Hotkey("Space") ; ÇØ´çÅ°°¡ ´­·Á¾ß ´ÙÀ½À¸·Î ÁøÇà
+G_Hwnd := WinExist("A") ; ÇöÀç È°¼ºÈ­µÈ Ã¢ÀÇ °íÀ¯¾ÆÀÌµð¸¦ °¡Á®¿Â´Ù.
 WinGetActiveTitle, G_Title
 GuiControl, Enable, Button4
 GuiControl,, Edit1, % G_Title
 Gui, Show,, % ">"
 return
 
-ButtoníŒŒì¼ì„ íƒ:    
+ButtonÆÄÀÏ¼±ÅÃ:    
 Gui, Submit 
 tempfile := G_File
 FileSelectFile, G_File
-if (!G_File) ; ë¹„ì–´ìžˆì„ê²½ìš°
+if (!G_File) ; ºñ¾îÀÖÀ»°æ¿ì
 	G_File := tempfile
 else
 	GuiControl, Enable, Button5
@@ -165,30 +181,23 @@ Gui, Show
 return
 
 
-Buttonê²€ìƒ‰:
+Button°Ë»ö:
 Gui, Submit, NoHide
-; í•¸ë“¤, íŒŒì¼ì´ë¦„
+; ÇÚµé, ÆÄÀÏÀÌ¸§
 G_List := Inactive_Search(G_Hwnd, G_File)
 G_Num := 0
 Guicontrol,, Static1,
 if (G_List[1])
 {
-	Guicontrol,, Static1, % "ê¸¸ì´ = " G_List[2][1] " ë†’ì´ = " G_List[2][2]
-	Gui, Show,, % "> " G_List[1] "ê°œ ì°¾ìŒ"
+	Guicontrol,, Static1, % "±æÀÌ = " G_List[2][1] " ³ôÀÌ = " G_List[2][2]
+	Gui, Show,, % "> " G_List[1] "°³ Ã£À½"
 }
 else
 {
-	Gui, Show,, % "> ëª» ì°¾ìŒ"
+	Gui, Show,, % "> ¸ø Ã£À½"
 }
 Return
 
-GuiClose:
+kffff@%kffffkfkf@kffkffffk#%f@fkf%f@k#ffkfkfkffffkffkff@%@k#ff%f@kffkkff@fkfkffk#fff@%kffkf@k#kf:
 ExitApp
-
-
-;$OBFUSCATOR: $IGNORE_AFTER_THIS: 
-#Include MyLib.ahk
-#Include Gdip.ahk
-#Include Gdip_ImageSearch.ahk
-
 

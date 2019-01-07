@@ -1,0 +1,379 @@
+#SingleInstance force
+SetTitleMatchMode ,2
+SetBatchLines -1
+#NoEnv
+Gui, Add, Text, x65 y15 w150 h20, 매크로 작동상태 :
+Gui, Add, Edit, x170 y11 w25 h20 vEdit,
+Gui, Add, Text, x15 y45 w150 h20, 퀘스트 :
+Gui, Add, Checkbox, x127 y41 w90 h20 v취소 Checked, 사용
+Gui, Add, Text, x15 y70 w150 h20, 아이템 장착 :
+Gui, Add, Checkbox, x127 y66 w90 h20 v장착 Checked, 사용
+
+Gui, Add, Button, x20 y100 w70 h30, 시작 (F1)
+Gui, Add, Button, x100 y100 w70 h30, 정지 (F2)
+Gui, Add, Button, x180 y100 w70 h30, 위치조절
+Gui, show, w270, 퀘스트 진행
+
+매크로상태 := false
+GuiControl,,Edit, Off
+
+return
+
+
+F3::
+
+WinGetPos, x, y, w, h, 사사테스트
+eX := x + w
+eY := y + h
+이미지서치("사마법조각1", [x,y,ex,ey],[80,10], 타이틀,[440,47]) ;흠... 오핫은 스펠링만 같으면 같은걸로 인식하는데... 아 그래요?
+return
+
+F4::
+lp := 422|117<<16
+
+PostMessage, 0x201, 1, %lp%,, 사사테스트 ; 마우스 왼클릭 다운
+Sleep, 50
+PostMessage, 0x202, 0, %lp%,, 사사테스트 ; 마우스 왼클릭 업
+
+return
+
+;이미지만 찾으면 되는부분이에요 못 찾으면 아무것도 없어서 클릭안하죠 에초에 못찾으면 에러레벨1이니까 절대 저기로는 못들어가죠넹
+; 근데요~ 지금 요거 무슨작업하는거에요???
+이미지서치(이미지, 찾는좌표, 추가좌표, 타이틀, 추가클릭리스트 = "")
+{
+	CoordMode, Pixel, Screen
+	CoordMode, Mouse, Screen
+	Loop
+	{
+		ToolTip, % A_index " > " 이미지
+		Sleep, 10
+		ImageSearch, OutX, OutY, 찾는좌표[1], 찾는좌표[2], 찾는좌표[3], 찾는좌표[4], *10 a\%이미지%.bmp
+		if (ErrorLevel = 0) ; 게임시작 화면 삼찾기
+		{
+			tempx := (OutX - 찾는좌표[1]) + 추가좌표[1]
+			tempy := (OutY - 찾는좌표[2]) + 추가좌표[2]
+			controlclick,x%tempx% y%tempy%, % 타이틀
+			if (추가클릭리스트 != "")
+			{
+				for i, v in 추가클릭리스트
+				{
+					Sleep, 125
+					tempx := v[1]
+					tempy := v[2]
+					controlclick,x%tempx% y%tempy%, % 타이틀
+					
+				}
+			}
+			return "찾음"
+		}
+		else
+		{
+			if (A_index > 25)
+			{
+				return "못찾음"
+			}
+		}
+	}	
+}
+
+
+
+F1::
+Button시작(F1):
+{
+	global 매크로상태 := true
+	CoordMode, mouse, Screen
+	CoordMode, Pixel, Screen
+	Gui, submit, nohide	
+	GuiControl,,Edit, On	
+	SoundPlay a\자동차 리모콘 삑삑.wav
+	WinMove, 퀘스트 진행, , 685, 835
+	
+	global sX
+	global sY
+	global eX
+	global eY
+	타이틀 := "사사테스트"
+	Loop
+	{
+		;이미지서치(이미지, 찾는좌표, 추가좌표, 타이틀, 추가클릭리스트 = "")
+		WinGetPos, sX, sY, sWidth, sHeight, 사사테스트
+		eX := sX + sWidth
+		eY := sY + sHeight
+		locationList := [sX,sY,ex,ey] 
+		이미지서치("삼", locationList,[0, 0], 타이틀)
+		이미지서치("구글", locationList,[173, 6], 타이틀)
+		이미지서치("공지사항", locationList,[-14, 3], 타이틀, [[267, 278]])
+		이미지서치("임1", locationList, [0, 0], 타이틀)
+		이미지서치("이벤끄기", locationList, [3,3], 타이틀)
+		
+		
+		; 버튼 두개로 나눠서하세요 로그인이랑 조각작이랑 나눠서 매크로인데 처음부터 이어지지가않으니 쓸데없이 루프만 돌듯하니까요
+		
+		tempnum = 1
+		templist := [[21,23], [-23,22], [21,-11]]
+		tempchecklist := [1,1,1]
+		Loop
+		{
+			if (이미지서치("군령", locationList, [113,6], 타이틀) = "찾음") ; d
+			{
+				break
+			}
+			if (tempchecklist[1] == 0 && tempchecklist[2] == 0 && tempchecklist[3] == 0)
+			{
+				break
+			}
+			tempchecklist[tempnum] := 이미지서치("사마법조각" tempnum, locationList, templist[tempnum], 타이틀) == "못찾음" ? 0 : 1
+			if (tempchecklist[tempnum] == 1)
+			{
+				Loop
+					{if (이미지서치("군령", locationList, [113,6], 타이틀) = "찾음") ; d
+					{
+						break
+					}
+					if (이미지서치("쟁탈소탕", locationList,[0, 0], 타이틀) == "찾음")
+					{
+						Loop
+						{
+							if (이미지서치("쟁탈건너뛰기", locationList,[0, 0], 타이틀) == "찾음")
+							{
+								Loop
+								{
+									if (이미지서치("쟁탈확인", locationList,[0, 0], 타이틀) == "찾음")
+									{
+										break
+									}
+								}
+								break
+							}
+						}
+						break
+					}
+				}				
+			}
+			{
+				if (tempnum == 4)
+				{
+					tempnum = 0
+				}
+				tempnum++
+			}
+		}
+				
+		Loop
+		{
+			if (이미지서치("쟁탈조각합성", locationList,[0, 0], 타이틀) == "찾음")
+			{
+				Loop
+				{
+					if (이미지서치("쟁탈합성완료", locationList,[50, 50], 타이틀) == "찾음")
+					{
+						break
+					}
+				}
+				break
+			}			
+		}
+; 이렇게하면 슬립은 안해도 되지만 절대적으로 다음에 저게 나와야하는 단점이 있으므로 아닌상황에서는 쓰면 안되요 루프에서 빠져나올려면 따로 조건 줘야하니까 그럼 슬립을 하면 되는거 아니에요?^^;; 슬립을 많이 쓰면 매크로 만드는 의미가 없죠 아~		
+;보물쟁탈
+		ImageSearch, OutX, OutY, sX, sY, eX, eY, *10 a\군령.bmp
+		if (ErrorLevel = 0) ; 군령부족하믄 정지
+		{
+			controlclick,x375 y111, 44
+			Sleep, 100 
+			controlclick,x516 y47, 44
+			Sleep, 100
+		}
+
+		
+		ImageSearch, OutX, OutY, sX, sY, eX, eY, *10 a\쟁탈휴전.bmp
+		if (ErrorLevel = 0) ; 휴전해제 찾기
+		{
+			controlclick,x317 y250, 44
+			Sleep, 100
+		}
+		
+
+	
+; 동맹임무		
+
+		동맹임무1("위연")
+		Sleep, 100
+		동맹임무1("서서")
+		Sleep, 100
+		동맹임무1("화재")
+		Sleep, 100
+		동맹임무1("맥성")
+		Sleep, 100
+		동맹임무1("관도")
+		Sleep, 100
+		동맹임무1("한헌제")
+		Sleep, 100
+		동맹임무1("가정")
+		Sleep, 100
+		동맹임무2("조앙")
+		Sleep, 100
+		동맹임무2("남정")
+		Sleep, 100
+		동맹임무2("사마의")
+		Sleep, 100
+		동맹임무2("낙봉파")
+		Sleep, 100
+		동맹임무2("정군산")
+		Sleep, 100
+		동맹임무3("육손")
+		Sleep, 100
+		동맹임무3("손건")
+		Sleep, 100
+		동맹임무3("감녕")
+		Sleep, 100
+		동맹임무3("초선")
+		Sleep, 100
+		동맹임무3("하후걸")
+		Sleep, 100
+		동맹임무3("장비")
+		Sleep, 100
+		동맹임무3("방통")
+		Sleep, 100
+		동맹임무3("조운")
+		Sleep, 100
+		동맹임무3("유언")
+		Sleep, 100
+		동맹임무3("관우")
+		Sleep, 100
+		동맹임무3("등지")
+		Sleep, 100
+		동맹임무3("진등")
+		Sleep, 100
+		동맹임무3("위연")
+		Sleep, 100
+		동맹임무3("전위")
+		Sleep, 100
+		동맹임무4("여몽")
+		Sleep, 100
+		동맹임무3("칠")
+		Sleep, 100
+		동맹임무3("우두산")
+		Sleep, 100
+		동맹임무3("제갈량")
+		Sleep, 100
+		동맹임무4("원술")
+		Sleep, 100
+		동맹임무4("허유")
+		Sleep, 100
+		동맹임무4("동탁")
+		Sleep, 100
+		동맹임무4("면죽")
+		Sleep, 100
+		동맹임무4("제갈량")
+		Sleep, 100
+		동맹임무4("공성계")
+		Sleep, 100
+		동맹임무4("아버지")
+		Sleep, 100
+
+		ImageSearch, OutX, OutY, sX, sY, eX, eY, *10 a\동맹퀘정지.bmp
+		if (ErrorLevel = 0)
+		{
+			controlclick,x432 y80, 44
+			Sleep, 100
+		}
+		
+		else
+		{
+			ImageSearch, OutX, OutY, sX, sY, eX, eY, *10 a\동맹퀘공헌.bmp
+			if (ErrorLevel = 0)
+			{
+				controlclick,x490 y157, 44
+				Sleep, 100
+			}
+		
+			ImageSearch, OutX, OutY, sX, sY, eX, eY, *10 a\동맹퀘수락.bmp
+			if (ErrorLevel = 0)
+			{
+				controlclick,x412 y152, 44
+				Sleep, 100
+			}
+		}
+	}
+	return
+}
+return
+
+동맹임무1(이미지파일)
+{
+		ImageSearch, OutX, OutY, sX, sY, eX, eY, *10 a\%이미지파일%.bmp
+		if (ErrorLevel = 0)
+		{
+			controlclick,x219 y191, 44
+			Sleep, 100
+		}
+		return
+}
+
+동맹임무2(이미지파일)
+{
+		ImageSearch, OutX, OutY, sX, sY, eX, eY, *10 a\%이미지파일%.bmp
+		if (ErrorLevel = 0)
+		{
+			controlclick,x319 y191, 44
+			Sleep, 100
+		}
+		return
+}
+
+동맹임무3(이미지파일)
+{
+		ImageSearch, OutX, OutY, sX, sY, eX, eY, *10 a\%이미지파일%.bmp
+		if (ErrorLevel = 0)
+		{
+			controlclick,x219 y235, 44
+			Sleep, 100
+		}
+		return
+}
+
+동맹임무4(이미지파일)
+{
+		ImageSearch, OutX, OutY, sX, sY, eX, eY, *10 a\%이미지파일%.bmp
+		if (ErrorLevel = 0)
+		{
+			controlclick,x319 y235, 44
+			Sleep, 100
+		}
+		return
+}
+
+F2::
+Button정지(F2):
+{
+	GuiControl,,Edit, Off
+	SoundPlay a\자동차 리모콘 삑삑.wav
+	매크로상태 := false
+}
+return
+
+Button위치조절:
+{
+	WinMove, 팟플레이어, , 185, 664, 535, 300
+	Sleep, 100
+	WinMove, 1, , 192, 0
+	Sleep, 100
+	WinMove, 11, , 192, 0
+	Sleep, 100
+	WinMove, 21, , 192, 0
+	Sleep, 100
+	WinMove, 31, , 192, 0
+	Sleep, 100
+	WinMove, 41, , 192, 0
+	Sleep, 100
+	WinMove, 51, , 192, 0
+	Sleep, 100	
+}
+return
+
+GuiClose:
+{
+	ExitApp
+}
+return

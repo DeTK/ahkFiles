@@ -1,0 +1,1599 @@
+
+/******************************************************************************
+NOTE: 	모든 변수는 문자 스트링으로 저장됩니다 !!!
+숫자를 포함하는 문자열은 필요할 때 숫자로 변환되고 결과는 다시 문자열로 변환됩니다..
+NOTE: 	닫는 * /는 줄에서 제일 먼저 나와야합니다. 그렇지 않으면 "나머지 스크립트가 주석 처리 된 것처럼 내 스크립트가 지금 실행을 멈추는 이유는 무엇입니까?"라고 스스로에게 묻습니다.
+
+
+
+/****************************************************************************** 
+A: AUTOHOTKEY SCRIPT에 명령 행 매개 변수 전달
+인수(인자)는 스페이스 또는 탭인 공백으로 구분.
+캐럿 문자 (^)는 이스케이프 문자 또는 구분 문자로 인식되지 않습니다. 문자는 프로그램에서 argv 배열로 전달되기 전에 운영 체제의 명령 행 구문 분석기에서 완전히 처리됩니다.
+큰 따옴표로 묶인 문자열 ( "string")은 포함 된 공백에 관계없이 단일 인수로 해석됩니다. 따옴표 붙은 문자열은 인수에 포함될 수 있습니다.
+앞에 백 슬래시 (\ ")가있는 큰 따옴표는 리터럴 큰 따옴표 문자 (")로 해석됩니다.
+백 슬래시는 큰 따옴표 바로 앞에 오는 경우가 아니면 문자 그대로 해석됩니다.
+짝수 개의 백 슬래시 뒤에 큰 따옴표가 오는 경우 각 쌍의 백 슬래시에 대해 하나의 백 슬래시가 argv 배열에 배치되고 큰 따옴표는 문자열 구분 기호로 해석됩니다.
+홀수 개의 백 슬래시 뒤에 큰 따옴표가 있으면 각 쌍의 백 슬래시에 대해 하나의 백 슬래시가 argv 배열에 배치되고 큰 따옴표는 나머지 백 슬래시에 의해 "이스케이프"되어 리터럴 이중 인용 부호 ( " )를 argv에 넣어야합니다.
+명령 줄 매개 변수를 모든 프로그램에 전달하는 방법에 대한 기술 정보 A : 명령 줄 매개 변수 검색
+NumParams = %0%
+Param1 = %1%
+Param2 = %2%
+Param3 = %3%
+MsgBox NumParams = %0%
+MsgBox Param1 = %1%
+MsgBox Param2 = %2%
+MsgBox Param3 = %3%
+
+
+/****************************************************************************** 
+B:  AUTOHOTKEY 스크립트가 시작될 때 일반적으로 발견 된 것들
+#NoTrayIcon               ;이 AutoHotkey 프로그램의 트레이 아이콘을 원하지 않는 경우
+#NoEnv                    ;성능 및 향후 AutoHotkey 릴리즈와의 호환성을 위해 권장됩니다.
+#SingleInstance force     ;대화 상자를 건너 뛰고 이전 인스턴스를 자동으로 바꿉니다.
+;;SendMode Input          ;스피드가 0 인 것처럼 MouseMove가 점프하는 것을 발견했습니다. (뛰어난 속도와 안정성으로 인해 새로운 스크립트에 권장되었습니다.)
+SetKeyDelay, 90           ;원하는 모든 숫자 (밀리 초)
+CoordMode,Mouse,Screen    ;초기 상태는 상대적입니다.
+CoordMode,Pixel,Screen    ;초기 상태는 상대적입니다. 마우스를 Screen으로 설정하고 GetPixelColor를 사용하면이 라인을 잊어 버리기 때문에 좌절감이 기다리고 있습니다. 마우스, 픽셀, 툴팁, 메뉴, 캐럿
+MouseGetPos, xpos, ypos   ;마우스의 초기 위치 저장
+WinGet, SavedWinId, ID, A ;현재 활성 창 저장
+
+;로그 파일 설정:
+SetWorkingDir, %A_ScriptDir%  ;이 스크립트 파일이있는 기본 디렉토리를 설정하십시오. (예상되는 및 따옴표 붙지 않는 문자열이므로 %% 참고)
+LogFile := "MyLog.txt"
+FileAppend, 이것은 메시지입니다.`n, %LogFile%  ;새 줄을 시작하려면 후행의 (`n)을주의하십시오. 당신이 원한다면 이것은 대신에 선두 (`n) 일 수있다. (예상되는 및 따옴표 붙지 않는 문자열이므로 %% 참고)
+창 및 마우스 커서 위치를 복원하는 마지막 항목 :
+WinActivate ahk_id %SavedWinId%  ;원본 창 복원
+MouseMove, xpos, ypos, 10    ;원래 마우스 위치 복원
+ExitApp
+Esc::ExitApp  ;이 스크립트를 취소하려면 ESC 키를 누릅니다. ExitApp 후에 배치됩니다.
+              ;단축키 정의입니다 (ExitApp를 실행하려면 ESC 키를 정의해야 함). 에이
+              ;단축키 정의 행은 그 시점에서 실행을 중지하므로 스크립트를 원할 경우
+              ;끝까지 실행하지만 ESC 키를 사용하여 스크립트를 종료 할 수 있습니다. put
+              ;ExitApp 문 바로 뒤에있는 단축키 정의.
+
+
+
+
+/****************************************************************************** 
+C:  %% 를 사용할 때
+
+LESSON #1: 
+%x%를 사용하는 유일한 장소는 큰 따옴표로 묶지 않은 리터럴 문자열이 필요합니다. 그렇지 않으면 변수 이름 주위에 %%를 사용하지 마십시오.
+
+다음 예제에서 따옴표가없는 리터럴 문자열이 예상됩니다. (= 따옴표가없는 리터럴 문자열을 지정합니다)
+n = Ishmael
+x = Call me %n%
+MsgBox %x%
+
+x = 500
+y = 500
+z = 10
+MouseMove, 500, 500, 10           ;공장
+MouseMove, 500 - 1, 500 + 1, 10   ;공장
+MouseMove,  x, y, z               ;공장
+MouseMove,  x - 1, y + 1, z + 2   ;공장
+
+;그러나 MouseMove 때문에 작동하지 않습니다.
+;따옴표로 묶지 않은 리터럴 문자열을 기대하지 않습니다.
+MouseMove, %x% - 1, %y% + 1, 10   ;효과가 없다
+혼란은 다음과 같은 경우에도 발생합니다.
+MouseMove, %x%, %y%, %c%   ;"이전 버전과의 호환성을 위해 명령 매개 변수가
+                           ;'표현식이 될 수 있음'으로 문서화 됨 고립 된 이름을 백분율 기호로 처리
+                           ;(예 : % Var %이지만 배열 % i %는 제외) 백분율 기호가없는 것 같습니다. "
+                           ;- 자동 홈 페이지 문서 : 변수 및 표현식
+
+LESSON #2: 
+x에 원하는 내용이 들어있는 두 번째 변수의 이름이 들어 있으면 (% x %) (괄호로 묶여 있음)를 사용하십시오.
+a = 500    ; a = "500"
+b = 200    b = "200"
+x := "a"
+y := "b"
+MouseMove, (%x%), (%y%)            x = a, a = 500, y = b, b = 200
+MouseGetPos, xpos, ypos
+MsgBox xpos=%xpos%  ypos=%ypos%    ; y = 500 ypos = 200
+
+LESSON #3: 
+규칙의 예외처럼 보이는 인스턴스 :
+MyDocument := "C:\Program Files\AutoHotkey\license.txt"
+Run, notepad.exe "%MyDocument%"
+따옴표로 묶은 문자열 안에 %%를 사용하고있는 것처럼 보이지만 실제로는 ""가 필요하지 않습니다. 그냥 권장합니다. 이것은 또한 작동합니다.
+Run, notepad.exe %MyDocument%
+run 함수는 따옴표로 묶지 않은 문자열을 예상하므로 %%를 사용합니다. 그렇지 않으면 메모장에서 'MyDocument'라는 파일을 열려고 시도합니다.
+
+위의 첫 번째 경우에서 run 함수는 큰 따옴표 문자로 시작하고 끝나는 따옴표가없는 문자열을 실제로 받아들입니다.
+
+기술 노트
+AutoHotkey 실행 명령 대상 문자열이 Windows CreateProcess () 함수에 command_line 매개 변수로 전달됩니다 믿습니다. AutoHotkey 소스 파일에서 script.cpp 루틴 Script :: ActionExec에서 CreateProcess 호출을 볼 수 있습니다 :
+if (CreateProcess(NULL, command_line, NULL, NULL, FALSE, 0, NULL, aWorkingDir, &si, &pi))
+CreateProcess에 대한 MSDN 설명서에 "공간이 포함 된 긴 파일 이름을 사용하는 경우 파일 이름이 끝나는 위치와 인수가 시작될 때 따옴표로 묶은 문자열을 사용하십시오."
+
+따라서 시작과 끝의 큰 따옴표 문자는 실제로 전달되는 문자열의 일부입니다.
+
+(05/29/2009 - AutoHotkey가 Run 명령을 분석하는 방법을 테스트하고 있습니다. 끝나면 결과를 게시 할 예정입니다.)
+
+Reference:
+    CreateProcess() : http://msdn.microsoft.com/en-us/library/ms682425.aspx 
+    CreateProcess() : http://msdn.microsoft.com/en-us/library/ms682425(VS.85).aspx
+
+
+/****************************************************************************** 
+D:  ERASE A VARIABLE 
+v =
+v := ""
+
+
+/****************************************************************************** 
+E:  변수 설정 (:=)
+숫자 및 따옴표 붙은 문자열을 저장하려면 콜론 - 등호 연산자 (:=)를 사용하십시오.
+
+NOTE: 숫자를 포함한 모든 변수는 문자열로 저장됩니다. 문자열은 필요한 경우 자동으로 숫자로 변환 된 다음 결과가 변수에 저장 될 때 문자열로 다시 변환됩니다.
+ABC := "David"
+David := "Susan"
+
+v := "ABC"                      ; v = "ABC"
+MsgBox v := "ABC"`n`nv = "%v%"
+
+v := ABC                        ; ABC 변수이다.. v = "David"
+MsgBox v := ABC`n`nv = "%v%"
+
+v := %ABC%                      ; ABC 변수 이름을 포함하는 변수입니다.. v = "Susan"
+MsgBox v := `%ABC`%`n`nv="%v%"  ; NOTE: ABC가 정의되지 않았거나 비어 있으면 프로그램이 중단됩니다!
+
+v := "123"                      ; v = "123" (따옴표는 포함되지 않았다.)
+MsgBox v := "123"`n`nv = "%v%"
+
+v := 123                        ; v = "123" (숫자로 해석 될 수 있다면 숫자입니다. 그렇지 않으면 변수 이름입니다.)
+MsgBox v := 123`n`nv = "%v%"
+
+;123 이 끔찍한 예제 에서처럼 변수로 만들 수 있습니다.:
+123 := 456
+MsgBox v = %123%  ; 메시지는 "v = 456"입니다.
+
+
+
+/****************************************************************************** 
+F:  변수 설정 (=) 
+등호 부호 연산자 (=)를 사용하여 인용되지 않은 리터럴 문자열을 할당합니다.
+리터럴 문자열 "ABC"대신 변수 ABC를 포함하려면 %ABC%
+ABC = David
+David = Susan
+
+v =  123                        ; in = "123"
+MsgBox v = 123`n`nv = "%v%"
+
+v = 0001                        ; in = "0001"
+MsgBox v = 0001`n`nv = "%v%"
+
+v = ABC                         ; v = "ABC"
+MsgBox v = ABC`n`nv = "%v%"
+
+v = %ABC%                       ABC는 변수입니다. v = "David"
+MsgBox v = `%ABC`%`n`nv = "%v%" (ABC = "David")
+
+;아마도 원하지 않는 것일 수 있습니다 :
+v = "ABC"                       ;v = 리터럴 문자열 "ABC" (큰 따옴표 포함)
+MsgBox v = "ABC"`n`nv = '%v%'
+
+
+
+/****************************************************************************** 
+G:  변수 복사 
+ABC := "David"
+David := "Susan"
+
+v := ABC                        ; ABC는 변수입니다. v = "David"
+MsgBox v := ABC`n`nv = "%v%"
+v = %ABC%                       ; ABC는 변수입니다. v = "David"
+MsgBox v = `%ABC`%`n`nv = "%v%"
+
+; 당신이 원했던 것 같지 않음 :
+v = ABC                         ; v = "ABC"(리터럴 문자열)
+MsgBox v = ABC`n`nv = "%v%"
+v := %ABC%                      ; ABC는 변수 이름을 포함하는 변수입니다. v = "수잔"
+MsgBox v := `%ABC`%`n`nv="%v%"  ; 참고 : ABC가 정의되지 않은 경우 프로그램이 멈 춥니 다!
+                                        (If David is undefined, then v = "")
+
+
+
+/****************************************************************************** 
+H:  IF STATEMENTS with () 
+SAT := "Saturday"          ; 이것을 보는 또 다른 방법은 다음과 같습니다.
+Saturday := "Saturn"       ; 토 -> 토요일 -> 토성
+MON := "Monday"            ; 월 -> 월요일 -> 달
+Monday := "Moon"
+
+MsgBox SAT := "Saturday"`nSaturday := "Saturn"`nMON := "Monday"`nMonday := "Moon"`n`n(another way to view this:)`nSAT --> Saturday --> Saturn`nMON --> Monday --> Moon`n`n#16
+
+; =
+If ("Saturday" = "Saturday")
+  MsgBox ("Saturday" = "Saturday")
+If ("Saturday" = "SATURDAY")
+  MsgBox ("Saturday" = "SATURDAY")
+
+; == (대소 문자 구분 비교)
+If ("Saturday" == "Saturday")              ; == 대소 문자 구별
+  MsgBox ("Saturday" == "Saturday")
+If ("Saturday" == "SATURDAY")              ; == 대소 문자 구별
+  MsgBox NO
+
+; SAT = "토요일"
+If (SAT = "Saturday")       ; SAT = "토요일", "토요일"과 비교
+  MsgBox (SAT = "Saturday")
+If ("Saturday" = SAT)       ; 리버스는 동일하게 작동합니다.
+  MsgBox ("Saturday" = SAT)
+If (SAT = "xxxxx")
+  MsgBox NO
+If ("xxxxx" = SAT)
+  MsgBox NO
+
+; % SAT % = "토성"
+If ("Saturn" = "Saturn")
+  MsgBox ("Saturn" = "Saturn")
+If (%SAT% = "Saturn")  ; SAT = "토요일", % SAT % = "토성", "토성"과 비교 (SAT가 정의되지 않은 경우 문제 없음)
+  MsgBox (`%SAT`% = "Saturn")`n`n(no problem if SAT not defined)
+If ("Saturn" = %SAT%)  ; Reverse는 동일하게 작동합니다 (SAT가 정의되지 않은 경우 문제 없음).
+  MsgBox ("Saturn" = `%SAT`%)`n`n(no problem if SAT not defined)
+If ("xxxxx" = %SAT%)   "xxxxx"와 "Saturn"을 비교하십시오.
+  MsgBox NO
+If (%SAT% = "xxxxx")   "토성"과 "xxxxx"를 비교하십시오.
+  MsgBox NO
+
+; "달"= % MY %
+If ("Moon" = "Moon")
+  MsgBox ("Moon" = "Moon")
+If (%MON% = "Moon")    ; MON = "월요일", 월요일 = "달", "달"과 비교 (MON이 정의되지 않은 경우 문제 없음)
+  MsgBox (%MON% = "Moon")`n`nMON = "Monday", Monday = "Moon", compare with "Moon"`n`n(no problem if MON not defined)
+If ("Moon" = %MON%)    ; "달", MON = "월요일", 월요일 = "달"(MON이 정의되지 않은 경우 문제 없음)
+  MsgBox ("Moon" = `%MON`%)`n`n"Moon", compare with MON = "Monday", Monday = "Moon"`n`n(no problem if MON not defined)
+If ("xxxxx" = %MON%)   "xxxxx"와 "달"을 비교하십시오.
+  MsgBox NO
+If (%MON% = "xxxxx")   "달"과 "xxxxx"를 비교하십시오.
+  MsgBox NO
+
+SAT =? MY
+If (SAT = MON)      ; 토요일 = "월요일"비교 [SAT = "토요일", MON = "월요일"]
+  MsgBox NO
+If (SAT < MON)      ; "토요일"< "달"
+  MsgBox NO
+If (SAT > MON)      ; "토요일"> "달"[S> M]
+  MsgBox (SAT > MON)`n`n"Saturday" > "Monday"`n`n[S > M]
+
+SAT =? % MY %
+If (SAT = %MON%)    ; 토요일 = "달"을 비교하십시오. [토요일 = "토요일", MON = "월요일", 월요일 = "달"과 비교]
+  MsgBox NO
+If (SAT < %MON%)    ; "토요일"< "달"
+  MsgBox NO
+If (SAT > %MON%)    ; "토요일"> "달"[S> M]
+  MsgBox (SAT > `%MON`%)`n`n"Saturday" > "Moon"   [S > M]`n`nSAT = "%SAT%",`nMON = "%MON%", %MON% = "Moon"
+
+% SAT % =? MY
+If (%SAT% = MON)    ; "토성"= "월요일"을 비교하십시오. [SAT = "토요일", 토요일 = "토성", MON = "월요일"]
+  MsgBox NO
+If (%SAT% < MON)    ; "토성"< "월요일"
+  MsgBox NO
+If (%SAT% > MON)    ; "토성"> "월요일"[S> M]
+  MsgBox (`%SAT`% > MON)`n`nSAT = "Saturday", %SAT% = "Saturn", compare with MON = "Monday"`n`n"Saturn" > "Moon"`n`n[S > M]
+
+% SAT % =? % MY %
+If (%SAT% = %MON%)  ; "토성"= "달"을 비교하십시오. [토요일 = 토요일 = 토요일 = 토성 = MON = "월요일", 월요일 = "달"과 비교]
+  MsgBox NO
+If (%SAT% < %MON%)  ; "토성"< "달"
+  MsgBox NO
+If (%SAT% > %MON%)  ; "토성"> "달"[S> M]
+  MsgBox (`%SAT`% > `%MON`%)`n`nSAT = "Saturday", %SAT% = "Saturn", compare with`nMON = "Monday", %MON% = "Moon"`n`n"Saturn" > "Moon"`n`n[S > M]
+
+H2: Comparing Numeric Values vs. Comparing Strings 
+If they can both be interpreted as numbers, then they are compared as numbers. Otherwise they are compared as strings. 
+; 수치 비교 VS. ()로 문장을 비교하면
+x = 05           ; x = "05"
+if (x > 3.14)    ; (5> 3.14)? 둘 다 숫자 값으로 해석 될 수 있으므로 숫자 값을 비교하십시오.
+  MsgBox if (x > 3.14)`nwith x = "05"`n`nCompare numeric values, since both "05" and "3.14" can be interpreted as numbers.`n(5 > 3.14) ?`nyes
+else
+  MsgBox xxxxxx
+
+if (x > "3.14")  ; ( "05"> "3.14")? "3.14"는 명시 적으로 문자열이기 때문에 문자열을 비교하십시오. ( ""3.14 주변은 문자열이 아니라 숫자라고 말합니다. 문자열을 비교하십시오.)
+  MsgBox xxxxxx
+else
+  MsgBox if (x > "3.14")`nwith x = "05"`n`nCompare strings, since "3.14" is explicitly a string.`nThe " " around "3.14" say it's a string, not a number, so do a string compare.`n("05" > "3.14") ?`n("0" > "3") ?`n(48 > 51) ?`nno
+
+
+; ASCII 테이블 :
+;   /  47
+;   0  48
+;   1  49
+;   2  50
+;   3  51
+;   4  52
+;   5  53
+;   6  54
+;   7  55
+;   8  56
+;   9  57
+;   :  58
+; 효능 검사
+y := "x"
+
+; % y %와 3.14를 비교하십시오.
+x = 03             ; x = "03"
+if (%y% > 3.14)    ; (3 > 3.14) ?
+  MsgBox xxxxxx
+else
+  MsgBox if (`%y`% > 3.14)`nwith y = "x"`nand x = "03"`n`nCompare numeric values, since both "03" and "3.14" can be interpreted as numbers.`n(3 > 3.14) ?`nno
+
+x = 05             ; x = "05"
+if (%y% > 3.14)    ; (5 > 3.14) ?
+  MsgBox if (`%y`% > 3.14)`nwith y = "x"`nand x = "05"`n`nCompare numeric values, since both "05" and "3.14" can be interpreted as numbers.`n(5 > 3.14) ?`nyes
+else
+  MsgBox NO
+
+% y %와 "3.14"를 비교하십시오.
+x = 03               ; x = "03"
+if (%y% > "3.14")    ; ("03" > "3.14") ?
+  MsgBox xxxxxx
+else
+  MsgBox if (`%y`% > "3.14")`nwith y = "x"`nand x = "03"`n`nCompare strings, since "3.14" is explicitly a string.`nThe " " around "3.14" say it's a string, not a number, so do a string compare.`n("03" > "3.14") ?`n("0" > "3") ?`n(48 > 51) ?`nno
+
+x = 05               ; x = "05"
+if (%y% > "3.14")    ; ("05" > "3.14") ?
+  MsgBox xxxxxx
+else
+  MsgBox if (`%y`% > "3.14")`nwith y = "x"`nand x = "05"`n`nCompare strings, since "3.14" is explicitly a string.`nThe " " around "3.14" say it's a string, not a number, so do a string compare.`n("05" > "3.14") ?`n("0" > "3") ?`n(48 > 51) ?`nno
+
+x := "/"             ; x = "/"
+if (%y% > "3.14")    ; ("/" > "3.14") ?
+  MsgBox xxxxxx
+else
+  MsgBox if (`%y`% > "3.14")`nwith y = "x"`nand x = "/"`n`nCompare strings, since "3.14" is explicitly a string.`nThe " " around "3.14" say it's a string, not a number, so do a string compare.`n("/" > "3.14") ?`n("/" > "3") ?`n(47 > 51) ?`nno
+
+x := ":"             ; x = ":"
+if (%y% > "3.14")    ; (":" > "3.14") ?
+  MsgBox if (`%y`% > "3.14")`nwith y = "x"`nand x = ":"`n`nCompare strings, since "3.14" is explicitly a string.`nThe " " around "3.14" say it's a string, not a number, so do a string compare.`n(":" > "3.14") ?`n(":" > "3") ?`n(58 > 51) ?`nyes
+else
+  MsgBox xxxxxx
+
+
+
+/****************************************************************************** 
+I:  IF STATEMENTS without () 
+Translate the 1st, take the 2nd literally 
+SAT := "Saturday"          ; 이것을 보는 또 다른 방법은 다음과 같습니다.
+Saturday := "Saturn"       ; 토 -> 토요일 -> 토성
+MON := "Monday"            ; 월 -> 월요일 -> 달
+Monday := "Moon"
+
+MsgBox SAT := "Saturday"`nSaturday := "Saturn"`nMON := "Monday"`nMonday := "Moon"`n`n(another way to view this:)`nSAT --> Saturday --> Saturn`nMON --> Monday --> Moon
+
+; 토
+; "토요일"= .... 불법
+If SAT = Saturday    ; SAT = "토요일", "토요일"과 비교
+  MsgBox If SAT = Saturday`n`nSaturday = Saturday
+If SAT = %Saturday%  ; SAT = "Saturday"토요일과 비교 토요일 % = "Saturn"
+  MsgBox NO
+If SAT = SAT         ; SAT = "토요일", "SAT"와 비교
+  MsgBox NO
+If SAT = %SAT%       ; SAT = "토요일", % SAT %와 비교 = "토요일"
+  MsgBox If SAT = `%SAT`%`n`nSaturday = Saturday
+
+% SAT %
+; 참고 : SAT가 정의되지 않았거나 비어 있으면 프로그램이 중단됩니다!
+If %SAT% = Saturn   ; SAT = "토요일", 토요일 = "토성", "토성"
+  MsgBox If `%SAT`% = Saturn`n`nSAT = "%SAT%", `%Saturday`% = %Saturday%, compare with "Saturn"`n`n(Note: if SAT is undefined or blank, program will halt!)
+If %SAT% = xxxxx   ; SAT = "토요일", 토요일 = "토성", "xxxxx"와 비교
+  MsgBox NO
+
+;토요일
+If Saturday = Saturn   토요일 = "토성", "토성"과 비교
+  MsgBox Saturday = Saturn`n`nSaturday="%Saturday%",compare with "Saturn"
+If Saturday = xxxxx   토요일 = "토성", "xxxxx"와 비교
+  MsgBox NO
+
+;%토요일%
+; 참고 : SATURDAY가 정의되지 않았거나 비어 있으면 프로그램이 중단됩니다!
+If %Saturday% =       토요일 = "토성", 토성 = <아무것도>, <아무것도 없음>
+  MsgBox If `%Saturday`% = `n`nSaturday=%Saturday%, Saturn=<nothing>, compare with <nothing>`n`n(NOTE: if SATURDAY is undefined or blank, program will halt!)
+If %Saturday% = %Saturn%  ; 토요일 = "토성", 토성 = <없음> 토성 % = <없음> (<아무것도> = <없음>)
+  MsgBox if `%Saturday`% = `%Saturn`%`n`nSaturday=%Saturday%, Saturn=<nothing>`ncompare with`%Saturn`% = <nothing>`n`n<nothing>=<nothing>
+If %Saturday% = xxxxx ; 토요일 = "토성", 토성 = <아무것도>, "xxxxx"와 비교
+  MsgBox NO
+If %Saturday% = ""    ; 토요일 = "토성", 토성 = <nothing>, 리터럴 2 개의 큰 따옴표 (두 개의 문자를 포함하는 문자열, 큰 따옴표 두 개)
+  MsgBox NO
+
+I2: Comparing Numeric Values vs. Comparing Strings 
+If they can both be interpreted as numbers, then they are compared as numbers. Otherwise they are compared as strings. 
+I2:
+; 수치 비교 VS. ()가없는 명령문이
+; ASCII 테이블 :
+;   !  33
+;   "  34
+;   #  35
+;   0  48
+
+x = 03            ; x = "03"
+if x > 3.14       ; 3> 3.14 (둘 다 숫자 값으로 해석 될 수 있으므로 숫자 값 비교)
+  MsgBox xxxxxx
+else
+  MsgBox if x > 3.14`nwith x=%x%`n`nCompare numeric values, since both can be interpreted as numeric values`n3 > 3.14 ?`nno
+
+x = 05            ; x = "05"
+if x > 3.14       ; 5> 3.14 (둘 다 숫자 값으로 해석 될 수 있으므로 숫자 값 비교)
+  MsgBox if x > 3.14`nwith x=%x%`n`nCompare numeric values, since both can be interpreted as numeric values`n5 > 3.14 ?`nyes
+else
+  MsgBox xxxxxx
+
+x = 03            ; x = "03"
+if x > "3.14"     ; 문자열 '03'을 문자열 ''3.14 " '와 비교하십시오 (큰 따옴표는 문자열의 일부입니다). 03의 ascii 0을 "3.14"의 따옴표로 비교하십시오 (48> 34?) 예.
+  MsgBox if x > "3.14"`nwith x=%x%`n`nDouble quotes are part of the string "3.14"`nso string compare 03 with "3.14"`ncompare leading '0' in 03 with leading quotation mark in "3.14"`nascii(0) = 48`nascii(") = 34`n48 > 34 (?)`nyes
+else
+  MsgBox xxxxxx
+
+x = !             ; x = '!' (아스키 33)
+if x > "3.14"     비교 문자열 '!' 문자열 ''을 사용합니다 (큰 따옴표는 문자열의 일부입니다). 아스키를 비교하십시오! "3.14"(48> 34?)에 큰 따옴표가 붙습니다.
+; (!> ")? -> (33> 34)? 아니오
+  MsgBox xxxxxx
+else
+ MsgBox if x > "3.14"`nwith x=%x%`nno`n`ncompare ascii ! with leading quotation mark in "3.14"`nascii(!) = 33`nascii(") = 34`n(33 > 34)?`nno
+
+x = #             ; x = '#'(아스키 35)
+if x > "3.14"     ; (!> ")? -> (35> 34)? 예
+  MsgBox if x > "3.14"`nwith x=%x%`nyes`n`ncompare ascii # with leading quotation mark in "3.14"`nascii(#) = 35`nascii(") = 34`n(35 > 34)?`nyes
+else
+  MsgBox xxxxxx
+
+
+; ASCII 테이블 :
+;   !  33
+;   "  34
+;   #  35
+;   0  48
+; 효능 검사
+y := "x"
+
+% y %와 3.14를 비교하십시오.
+x = 03            ; x = "03"
+if %y% > 3.14     ; 3 > 3.14 (?)
+  MsgBox xxxxxx
+else
+  MsgBox if `%y`% > 3.14`nwith y := "x"`nand x = "03"`n`nCompare numeric values, since both "03" and "3.14" can be interpreted as numbers.`n3 > 3.14 (?)`nno
+
+x = 05            ; x = "05"
+if %y% > 3.14     ; 5 > 3.14 (?)
+  MsgBox if `%y`% > 3.14`nwith y := "x"`nand x = "05"`n`nCompare numeric values, since both "05" and "3.14" can be interpreted as numbers.`n5 > 3.14 (?)`nyes
+else
+  MsgBox xxxxxx
+
+
+% y %와 "3.14"를 비교하십시오.
+x = 03            ; x = "03"
+if %y% > "3.14"   ; 큰 따옴표는 문자열 "3.14"의 일부이므로 '03'을 문자열 ' "3.14"와 비교하십시오. 03의 ascii 0을 "3.14"의 따옴표로 비교하십시오 (48> 34?) 예.
+  MsgBox if `%y`% > "3.14"`nwith y := "x"`nand x=%x%`n`nDouble quotes are part of the string "3.14"`nso string compare 03 with "3.14"`ncompare leading '0' in 03 with leading quotation mark in "3.14"`nascii(0) = 48`nascii(") = 34`n48 > 34 (?)`nyes
+else
+  MsgBox xxxxxx
+
+x = !             ; x = '!' (아스키 33)
+if x > "3.14"     ; 큰 따옴표는 문자열 "3.14"의 일부이므로 문자열 비교 '!' 문자열 ' "3.14"'이 (가) 있습니다. '!'비교 "3.14"(48> 34?)에 큰 따옴표가 붙습니다.
+  MsgBox xxxxxx
+else
+  MsgBox if `%y`% > "3.14"`nwith y := "x"`nand x=%x%`n`nDouble quotes are part of the string "3.14"`nso string compare ! with "3.14"`ncompare '!' with leading quotation mark in "3.14"`nascii(!) = 33`nascii(") = 34`n33 > 34 (?)`nno
+
+x = #             ; x = '#'(아스키 35)
+if x > "3.14"     ; (!> ")? -> (35> 34)? 예
+  MsgBox if `%y`% > "3.14"`nwith y := "x"`nand x=%x%`n`nDouble quotes are part of the string "3.14"`nso string compare # with "3.14"`ncompare '#' with leading quotation mark in "3.14"`nascii(#) = 35`nascii(") = 34`n35 > 34 (?)`nyes
+else
+  MsgBox xxxxxx
+
+
+
+/****************************************************************************** 
+J:  CHECK FOR A BLANK VARIABLE 
+(or undefined variable) 
+v := ""
+
+If v =
+  MsgBox v = ""
+
+If (v = "")
+  MsgBox v = ""
+
+
+
+/****************************************************************************** 
+K:  STRING MANIPULATION 
+
+K1: Trim whitespace at the START of a string
+; 문자열의 시작 부분에서 공백 제거 :
+v := "     0001     "
+MsgBox v="%v%"
+v := RegExReplace( v, "\A\s+" )
+MsgBox v="%v%"                  ; in = "0001"
+
+K2: Trim whitespace at the END of a string
+; 문자열의 끝에서 공백을 제거하십시오 :
+v := "     0001     "
+MsgBox v="%v%"
+v := RegExReplace( v, "\s+\z" )
+MsgBox v="%v%"                  ; in = "0001"
+
+
+K3: Trim whitespace at the START AND END of a string 
+K3a:
+; 문자열의 시작과 끝 부분에서 공백을 제거하십시오 :
+v := "     0001     "
+MsgBox v="%v%"
+v := RegExReplace( v, "(^\s+)|(\s+$)")
+MsgBox v="%v%"                  ; in = "0001"
+K3b:
+; 문자열의 시작과 끝에서 공백을 제거하십시오 :
+v := "     0001     "
+MsgBox v="%v%"
+v = %v%                         ; v = "0001"(기본적으로 AutoTrim ON)
+MsgBox v="%v%"
+
+
+K4: Concatenate Two Strings Together
+함께 두 개의 문자열을 결합하십시오.
+SAT := "Saturday"
+MON := "Monday"
+Saturday := "Saturn"
+Monday := "Moon"
+
+
+; 사용 =
+v = %SAT%%MON%      ; in = "SaturdayMondao"
+MsgBox v = "%v%"
+
+
+; 사용 : =
+v := "Saturday" . "Monday"  ; in = "SaturdayMondao"
+MsgBox v = "%v%"
+
+v := SAT . MON      ; v = "SaturdayMonday"(앞뒤에 SPACE가 있어야 함)
+MsgBox v = "%v%"
+
+v := %SAT% . MON    ; in = "Saturn Mondai"
+MsgBox v = "%v%"
+
+v := SAT . %MON%    ; in = "SaturdayMoon"
+MsgBox v = "%v%"
+
+v := %SAT% . %MON%  ; in = "SaturnMoon"
+MsgBox v = "%v%"
+
+
+K5: MsgBox를 사용하는 두 가지 방법
+MsgBox를 사용하는 두 가지 방법을 언급하는 것이 좋습니다.
+Msgbox Var = %Var%
+; 또는
+Msgbox % "Var = " . Var
+; 문자열 - ^^^^^ | ^^^ - 변수 이름
+; 사슬 같이 잇다
+
+K6: 
+SEE ALSO: 
+    Library for Text File Manipulation 
+    http://www.autohotkey.net/~heresy/Functions/TXT.ahk 
+
+
+/****************************************************************************** 
+L:  NUMBERS 
+NOTE: 모든 변수는 문자열로 저장됩니다.
+필요한 경우 문자열이 자동으로 숫자로 변환됩니다.
+결과가 변수에 저장되면 다시 문자열로 변환됩니다.
+
+L1: Adding numbers together 
+; 숫자 추가하기
+v := "123"
+v += 1
+MsgBox v = "%v%"     ; ~에서 "124"
+
+v := "123"
+v := v + 1
+MsgBox v = "%v%"     ; ~에서 "124"
+
+; 당신이 원했던 것 같지 않음 :
+v = 123            ; v <- "123"(리터럴 문자열)
+v = v + 1          ; v <- "v + 1"(리터럴 문자열)
+MsgBox v = "%v%"
+
+L2: Adding two strings together 
+두 문자열을 함께 추가하기
+; 둘 다 정수로 해석 될 수 있으면 결과 정수를 문자열로 제공합니다.
+v1 := 123
+v2 := 456
+v := v1 + v2       ; ~ < "579"
+MsgBox v = "%v%"
+
+; 하나 또는 둘 다 float로 해석 될 수있는 경우 결과 float (문자열)
+v1 := 1.23
+v2 := 45.6
+v := v1 + v2       ; ~ < "46.830000"
+MsgBox v = "%v%"
+
+; 하나 또는 둘 다 숫자로 해석 될 수없는 경우 결과는 빈 문자열입니다
+v1 := "123"
+v2 := "Susan"
+v := v1 + v2       ; v <- ""(빈 문자열)
+MsgBox v = "%v%"
+
+L3: Remove leading/trailing blanks/zeros from a number 
+; 숫자에서 맨 앞에 0을 제거하십시오.
+v := 0001             ; in = "0001"
+v += 0                ; v 정수로 변환, 0 추가, 다시 문자열로 변환
+MsgBox v = "%v%"      ; v = "1"(리터럴 문자열 "1"
+
+; 숫자에서 선행 공백과 후행 공백을 제거하십시오.
+v := "     1     "
+MsgBox v = "%v%"      ; in = "1"
+v += 0                ; v 정수로 변환, 0 추가, 다시 문자열로 변환
+MsgBox v = "%v%"      ; v = "1"(리터럴 문자열 "1"
+
+; 숫자에서 선행 공백과 후행 공백을 제거하고 앞에 오는 0을 제거합니다.
+v := "     0001     "
+MsgBox v = "%v%"      ; in = "0001"
+v += 0                ; v 정수로 변환, 0 추가, 다시 문자열로 변환
+MsgBox v = "%v%"      ; v = "1"(리터럴 문자열 "1"
+
+; (물론 그것은 모두 동일합니다. 그냥 v + = 0)
+
+L4: Pad a number with leading zeros or spaces 
+/************************************************ 
+VARIOUS WAYS TO PAD A NUMBER WITH LEADING ZEROS OR SPACES 
+(To pad with spaces, substitute spaces for the zeros.) 
+
+L4.1: Method #1: SubStr
+; 최다 0 또는 공백이있는 숫자 입력 - 방법 1 : SUBSTR
+; SubStr에 관한 문서 : "StartingPos가 1보다 작 으면
+; 문자열의 끝에서 오프셋으로 간주됩니다. 예 : 0
+; 마지막 문자를 추출하고 -1은 마지막 두 문자를 추출합니다. "
+v := 123
+            .... .... v .... 1 .... v .... 1
+v := SubStr("0000000000" . v, -9)  ; in = "0000000123"
+MsgBox v = "%v%"
+
+v := SubStr("abcdefghij" . v, -9)  ; v = "defghij123"(무슨 일이 일어나는지 더 쉽게 알 수 있음)
+MsgBox v = "%v%"
+
+L4.2: Method #2: StringRight
+; 숫자가 0 또는 0 인 숫자를 입력하십시오 - 방법 # 2 : StringRight
+v := 123
+     ... .... v .... 1 .... v .... 1 ...
+v := "0000000000" . v  ; v = "0000000000123"(또는 v = "0000000000"% v % 사용 가능)
+StringRight, v, v, 10  ; in = "0000000123"
+MsgBox v = "%v%"
+
+L4.3: Method #3: sprintf()
+; 숫자 0이나 숫자가있는 숫자를 입력하십시오 - 방법 3 : sprintf ()
+StrIn := "1234"
+size := VarSetCapacity(StrOut, 8)  StrOut이 8 자리를 유지하기를 원합니다.
+
+0으로 채우기
+DllCall("msvcrt\sprintf", Str, StrOut, Str, "%08d", "Int", StrIn )  0으로 채우기
+MsgBox, 0, Zeros, size=%size%`nStrIn = %StrIn%`nStrOut = %StrOut%   ; StrOut = "00000123"
+
+; 공백이있는 패드
+DllCall("msvcrt\sprintf", Str, StrOut, Str,  "%8d", "Int", StrIn )  ; 공백이있는 패드
+MsgBox, 0, Spaces, size=%size%`nStrIn = %StrIn%`nStrOut = %StrOut%  ; StrOut = "123"
+
+L4.4: Method #4: Prepend leading zeros
+; 앞에 오는 영점 또는 공백이있는 숫자 입력 - 방법 4 : 앞에 0을 앞에 붙입니다.
+v = 123
+Loop, % 9-StrLen(v)            ; (총 9 자리 9)
+    v = 0%v%                   ; OR : v : = 0. V
+MsgBox, 0, Zeros, v = "%v%"    ; in = "000000123"
+
+; 선행 공백 앞에 추가
+v = 123
+Loop, % 9-StrLen(v)            ; (총 9 자리 및 9 자리에 대해 9)
+    v := A_Space . v         ; OR : v : = "". V
+MsgBox, 0, Spaces, v = "%v%"   ; in = "123"
+
+L4.5: Method #5: SetFormat
+; 숫자가 0이나 숫자가있는 숫자를 넣으십시오 - 방법 5 : SetFormat 사용하기
+; (참고 : 정수를 실수로 변환하고 정수로 다시 변환하는 것에주의하십시오.
+; 정수는 32 비트의 데이터를 가지지 만 부동 소수점은 27 비트의 데이터만을가집니다.
+v = 1234
+SetFormat, Float, 08.0 ; (0은 0으로 채워진 8 자리 합계, 0은 소수점 이하 자릿수를 나타냄)
+v += 0.0               ; v를 float로 변환하고, 0을 더하고, 문자열로 다시 변환합니다.
+MsgBox v = %v%         ; 인 = 10000123ch
+
+v = 1234
+SetFormat, Float, 8.0  ; (8 자 및 공백으로 채워진 공간의 경우 8 개, 소수 자릿수의 경우 0 개)
+v += 0.0               ; v를 float로 변환하고, 0을 더하고, 문자열로 다시 변환합니다.
+MsgBox v = %v%         ; in = 123h
+
+
+
+/****************************************************************************** 
+M:  working with FILE NAMES 
+; 작업 디렉토리 설정 / 표시
+SetWorkingDir,%A_ScriptDir%
+MsgBox A_WorkingDir=%A_WorkingDir%
+
+; 파일 만들기 (참고 : 디렉토리가 있어야합니다)
+FileAppend, test 10, MyFile10.log           ; <WorkingDir> \ MyFile10.log
+FileAppend, test 11, \MyFile11.log          C : \ MyFile11.log
+FileAppend, test 12, SubDir\MyFile12.log    ; <작업 디렉터리> \ SubDir \ MyFile12.log
+FileAppend, test 13, SubDir\\\\\\\\\\\\\MyFile13.log   ; <WorkingDir> \ SubDir \ MyFile13.log 얼마나 많은 추가 \
+V := "C:\TEMP"
+FileAppend, test 14, %V%MyFile14.log        C : \ TEMPMyFile14.log
+FileAppend, test 15, %V%\MyFile15.log       C : \ TEMP \ MyFile15.log
+FileAppend, test 16, %V%\\\\\\\\\\\MyFile16.log   ; C : \ TEMP \ MyFile16.log 얼마나 많은 추가 \
+FileAppend, test 17, ..\MyFile17.log        작업 디렉토리에서 하나의 디렉토리 위로. <WorkingDir - ^> \ MyFile17.log
+MsgBox ErrorLevel=%ErrorLevel%              FileAppend는 오류를 테스트합니다. 0 = 성공, 1 = 실패
+
+
+
+/****************************************************************************** 
+N:  REGULAR EXPRESSIONS 
+(Note: AutoHotkey uses PCRE Perl-compatible format) 
+
+N1:  Regular Expression RESOURCES 
+
+CHEAT SHEETS 
+Regular Expressions (RegEx) - Quick Reference: http://www.autohotkey.com/docs/misc/RegEx-QuickRef.htm 
+Regular Expression Cheat Sheet: http://regexlib.com/CheatSheet.aspx 
+One Page Reference Cheat Sheet: http://www.regular-expressions.info/reference.html 
+Replacement Text Reference: http://www.regular-expressions.info/refreplace.html 
+
+HEAVY DOCUMENTATION 
+Syntax of regular expressions in Perl: http://search.cpan.org/dist/perl/pod/perlre.pod 
+Syntax of regular expressions in Perl: http://perldoc.perl.org/perlre.html 
+Concatenation of the PCRE man pages: http://www.pcre.org/pcre.txt 
+Perl Compatible Regular Expressions: http://en.wikipedia.org/wiki/PCRE 
+
+PROGRAMS 
+RegExBuddy: http://www.regexbuddy.com ($40) Screenshot: http://www.regexbuddy.com/screen.html 
+
+LIBRARIES 
+Regular Expression Library: http://regexlib.com/ 
+Categories:
+Email
+Uri
+Numbers
+Strings
+Dates and Times
+Misc
+Address/Phone
+Markup/Code
+http://www.regular-expressions.info/examples.html
+Grabbing HTML Tags
+Trimming Whitespace
+Matching an IP address
+Matching a Floating Point Number
+Matching an Email Address
+Matching Valid Dates
+Finding or Verifying Credit Card Numbers
+Matching Complete Lines
+Removing Duplicate Lines or Items
+Regex Examples for Processing Source Code
+Two Words Near Each Other
+A Collection/Library Of Regular Expressions: http://www.autohotkey.com/forum/viewtopic.php?t=13544
+Ensure that a path doesn't end with a backslash
+Ensure that a path ends with a backslash
+Replace characters illegal in a file name by something else (can be empty)
+Keep only lines starting with a given string
+Parse a date
+trim chars on left and/or right of strings
+How to make parsing loops work from back to front?
+How to replace variable references in a template text file by the value of the referenced variables?
+How to replace i with I only if it has spaces before and after
+remove duplicate lines
+
+N2:   Regular Expression EXAMPLES 
+
+Examples from: http://www.regular-expressions.info/numericranges.html 
+Matching Floating Point Numbers with a Regular Expression 
+Here are a few more common ranges that you may want to match: 
+000..255:       ——  ^([01][0-9][0-9]|2[0-4][0-9]|25[0-5])$
+0 or 000..255:  ——  ^([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])$
+0 or 000..127:  ——  ^(0?[0-9]?[0-9]|1[0-1][0-9]|12[0-7])$
+0..999:         ——  ^([0-9]|[1-9][0-9]|[1-9][0-9][0-9])$
+000..999:       ——  ^[0-9]{3}$
+0 or 000..999:  ——  ^[0-9]{1,3}$
+1..999:         ——  ^([1-9]|[1-9][0-9]|[1-9][0-9][0-9])$
+001..999:       ——  ^(00[1-9]|0[1-9][0-9]|[1-9][0-9][0-9])$
+1 or 001..999:  ——  ^(0{0,2}[1-9]|0?[1-9][0-9]|[1-9][0-9][0-9])$
+0 or 00..59:    ——  ^[0-5]?[0-9]$
+0 or 000..366:  ——  ^(0?[0-9]?[0-9]|[1-2][0-9][0-9]|3[0-6][0-9]|36[0-6])$
+Examples from: http://www.codeproject.com/KB/dotnet/regextutorial.aspx
+    1. elvis                 Find elvis
+    2. \belvis\b             Find elvis as a whole word
+    3. \belvis\b.*\balive\b  Find text with "elvis" followed by "alive"
+    4. \b\d\d\d-\d\d\d\d     Find seven-digit phone number
+    5. \b\d{3}-\d{4}         Find seven-digit phone number a better way
+    6. \ba\w*\b              Find words that start with the letter a
+    7. \d+                   Find repeated strings of digits
+    8. \b\w{6}\b             Find six letter words
+    9. .^\d{3}-\d{4}$        Validate a seven-digit phone number
+   10. \b\w{5,6}\b           Find all five and six letter words
+   11. \b\d{3}\s\d{3}-\d{4}  Find ten digit phone numbers
+   12. \d{3}-\d{2}-\d{4}     Social security number
+   13. ^\w*                  The first word in the line or in the text
+   14. \(?\d{3}[) ]\s?\d{3}[- ]\d{4}  A ten digit phone number
+   15. \S+                   All strings that do not contain whitespace characters
+   16. \b\d{5}-\d{4}\b|\b\d{5}\b           Five and nine digit Zip Codes
+   17. (\(\d{3}\)|\d{3})\s?\d{3}[- ]\d{4}  Ten digit phone numbers, a better way.
+                                           This expression will find phone numbers in several formats, like
+                                           "(800) 325-3535" or "650 555 1212".
+                                           The "\(?" searches for zero or one left parentheses,
+                                           "[) ]" searches for a right parenthesis or a space. The
+                                           "\s?" searches for zero or one whitespace characters.
+                                           Unfortunately, it will also find cases like
+                                           "650) 555-1212" in which the parenthesis is not balanced.
+                                           Below, you'll see how to use alternatives to eliminate this problem.
+   18. (\d{1,3}\.){3}\d{1,3}               A simple IP address finder
+   19. ((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)  IP finder
+   20. \b(\w+)\b\s*\1\b      Find repeated words
+   21. \b(?<Word>\w+)\b\s*\k<Word>\b   Capture repeated word in a named group
+   22. \b\w+(?=ing\b)        The beginning of words ending with "ing"
+   23. (?<=\bre)\w+\b        The end of words starting with "re"
+   24. (?<=\d)\d{3}\b        Three digits at the end of a word, preceded by a digit
+   25. (?<=\s)\w+(?=\s)      Alphanumeric strings bounded by whitespace
+   26. \b\w*q[^u]\w*\b       Words with "q" followed by NOT "u"
+   27. \b\w*q(?!u)\w*\b      Search for words with "q" not followed by "u"
+   28. \d{3}(?!\d)           Three digits not followed by another digit
+   29. (?<![a-z ])\w{7}      Strings of 7 alphanumerics not preceded by a letter or space
+   30. (?<=<(\w+)>).*(?=<\/\1>)  Text between HTML tags
+   31. Text between HTML tags (see referenced source page above)
+   32. a.*b                  The longest string starting with a and ending with b
+   33. a.*?b                 The shortest string starting with a and ending with b
+Phone numbers:
+    a. \(\d\d\d\)\s\d\d\d-\d\d\d\d
+    b. \(\d{3}\)\s\d{3}-\d{4}
+    4. \b\d\d\d-\d\d\d\d     Find seven-digit phone number
+    5. \b\d{3}-\d{4}         Find seven-digit phone number a better way
+    9. .^\d{3}-\d{4}$        Validate a seven-digit phone number
+   11. \b\d{3}\s\d{3}-\d{4}  Find ten digit phone numbers
+   14. \(?\d{3}[) ]\s?\d{3}[- ]\d{4}  A ten digit phone number
+   17. (\(\d{3}\)|\d{3})\s?\d{3}[- ]\d{4}  Ten digit phone numbers, a better way.
+Dates:
+    a. (\d\d)-(\d\d)-(\d\d\d\d)    MM-DD-YYYY   (MM -& $1, DD -& $2, YYY -& $3)
+    b. (\d\d\d\d)-(\d\d)-(\d\d)    YYYY-MM-DD   (YYYY -& $1, MM -& $2, DD -& $3)
+    c. ^\d{1,2}\/\d{1,2}\/\d{4}$   XX/XX/YYYY where XX can be 1 or 2 digits long and YYYY is always 4 digits long.
+
+
+/****************************************************************************** 
+N3:  RegExReplace 
+N3.1: Basic examples 
+; 예제들
+f1 := RegExReplace("55555", "5", "five") ; f1 = "fivefivefivefivefive"
+MsgBox f1=%f1%
+
+f2 := RegExReplace("55555", "55", "x") ; f2 = "xx5"
+MsgBox f2=%f2%
+
+N3.2: EXTRACT Month, Day, Year, from 1/22/2009
+정규 표현식에서 EXTRACT로 월 / 일 / 년 / 2009 년 1 월 22 일까지
+월 및 일은 1 또는 2 자리가 될 수 있습니다.
+ c := "xxxxxxxx 1/22/2009 yyyyyyyyyyyy"
+ month := RegExReplace(c,".*?(\d{1,2})\/(\d{1,2})\/(\d{4})(.*)","$1")
+ day   := RegExReplace(c,".*?(\d{1,2})\/(\d{1,2})\/(\d{4})(.*)","$2")
+ year  := RegExReplace(c,".*?(\d{1,2})\/(\d{1,2})\/(\d{4})(.*)","$3")
+ MsgBox month=%month%`nday=%day%`nyear=%year%
+
+N3.3: An example of how we can step by step build up our Regular Expression
+; 정규 표현식을 단계적으로 작성하는 방법의 예
+; 주어진 문자열 c, 데이터 추출 ...
+c := "  02-17-2009     238  Payment by Check.     314.15   9,265.35  "
+
+; 선행 및 후행 공백 제거
+c = %c%
+
+; 1.
+; c : = "수표로 지불 02-17-2009 238 314.15 9,265.35"
+; 전체 문자열을 가져 오는 "(. *)"로 시작하십시오.
+f3 := RegExReplace(c, "(.*)", "$1")
+MsgBox f3=%f3%
+; f3 = "수표로 지불 02-17-2009 238 314.15 9,265.35"
+
+; 2.
+; c : = "수표로 지불 02-17-2009 238 314.15 9,265.35"
+; 처음 두 자리 (월)를 파싱하려면 "(\ d \ d)"를 추가하십시오.
+f4 := RegExReplace(c, "(\d\d)(.*)", "{$1} {$2}")
+MsgBox f4=%f4%
+; f4 = "{02} {-17-2009 238 수표로 지불"314.15 9,265.35} "
+
+; 3.
+; c : = "수표로 지불 02-17-2009 238 314.15 9,265.35"
+; 대쉬를 구문 분석하려면 "-"를 추가하십시오.
+f5 := RegExReplace(c, "(\d\d)-(.*)", "{$1} {$2}")
+MsgBox f5=%f5%
+; f5 = "{02} {17-2009 238 수표로 지불하기 314.15 9,265.35}" "
+
+; 4.
+; c : = "수표로 지불 02-17-2009 238 314.15 9,265.35"
+; 두 번째 두 자리 (하루)를 구문 분석하고 $ 2로 저장하려면 "(\ d \ d)"를 추가하십시오.
+f6 := RegExReplace(c, "(\d\d)-(\d\d)(.*)", "{$1} {$2} {$3}")
+MsgBox f6=%f6%
+; f6 = "{02} {17} {-2009 238 수표로 지불하기 314.15 9,265.35}" "
+
+; 5.
+; c : = "수표로 지불 02-17-2009 238 314.15 9,265.35"
+; 대쉬를 구문 분석하려면 "-"를 추가하십시오.
+f6 := RegExReplace(c, "(\d\d)-(\d\d)(.*)", "{$1} {$2} {$3}")
+MsgBox f6=%f6%
+; f6 = "{02} {17} {-2009 238 수표로 지불하기 314.15 9,265.35}" "
+
+; 6.
+; c : = "수표로 지불 02-17-2009 238 314.15 9,265.35"
+; 년 (4 자리)을 구문 분석하고 $ 3으로 저장하려면 "(\ d \ d \ d \ d)"를 추가하십시오.
+f7 := RegExReplace(c, "(\d\d)-(\d\d)-(\d\d\d\d)(.*)", "{$1} {$2} {$3} {$4}")
+MsgBox f7=%f7%
+; f7 = "{02} {17} {2009} {238 수표로 지불} 314.15 9,265.35}"
+
+; 7.
+; c : = "수표로 지불 02-17-2009 238 314.15 9,265.35"
+; 하나 이상의 공백을 구문 분석하기 위해 "+"를 추가하십시오.
+f8 := RegExReplace(c, "(\d\d)-(\d\d)-(\d\d\d\d) +(.*)", "{$1} {$2} {$3} {$4}")
+MsgBox f8=%f8%
+; f8 = "{02} {17} {2009} {238 수표로 지불} 314.15 9,265.35}"
+
+; 8.
+; c : = "수표로 지불 02-17-2009 238 314.15 9,265.35"
+; 수표 번호 (하나 이상의 숫자)를 구문 분석하고 $ 4로 저장하려면 "(\ d +)"를 추가하십시오.
+f9 := RegExReplace(c, "(\d\d)-(\d\d)-(\d\d\d\d) +(\d+)(.*)", "{$1} {$2} {$3} {$4} {$5}")
+MsgBox f9=%f9%
+; f9 = "{02} {17} {2009} {238} {수표로 지불} 314.15 9,265.35}"
+
+; 9.
+; c : = "수표로 지불 02-17-2009 238 314.15 9,265.35"
+; 하나 이상의 공백을 구문 분석하기 위해 "+"를 추가하십시오.
+f10 := RegExReplace(c, "(\d\d)-(\d\d)-(\d\d\d\d) +(\d+) +(.*)", "{$1} {$2} {$3} {$4} {$5}")
+MsgBox f10=%f10%
+; f10 = "{02} {17} {2009} {238} {수표로 지불} 314.15 9,265.35}"
+
+; 10.
+; c : = "수표로 지불 02-17-2009 238 314.15 9,265.35"
+; 텍스트 (최소 일치)를 구문 분석하기 위해 "(. *?)"를 추가하고, 5 개의 공백을 분석하려면 "{5}"를 추가하십시오
+; (분명히 항상 5 개의 공백이 있습니다. 텍스트를 파싱 한 시점을 알려줍니다.)
+f11 := RegExReplace(c, "(\d\d)-(\d\d)-(\d\d\d\d) +(\d+) +(.*?) {5}(.*)", "{$1} {$2} {$3} {$4} {$5} {$6}")
+MsgBox f11=%f11%
+; f11 = "{02} {17} {2009} {238} {수표 지불} {314.15 9,265.35}"
+
+; 11.
+; c : = "수표로 지불 02-17-2009 238 314.15 9,265.35"
+; 달러와 센트를 파싱하려면 "([\ d,.] +)"를 추가하십시오 (쉼표와 소수점이있는 하나 이상의 숫자, 예 : 27,182.81)
+f12 := RegExReplace(c, "(\d\d)-(\d\d)-(\d\d\d\d) +(\d+) +(.*?) {5}([\d,.]+)(.*)", "{$1} {$2} {$3} {$4} {$5} {$6} {$7}")
+MsgBox f12=%f12%
+; f12 = "{02} {17} {2009} {238} {수표 지불} {314.15} {9,265.35}"
+
+; 12.
+; c : = "수표로 지불 02-17-2009 238 314.15 9,265.35"
+; 3 칸을 파싱하려면 "{3}"을 추가하십시오. (분명히 항상 3)
+f13 := RegExReplace(c, "(\d\d)-(\d\d)-(\d\d\d\d) +(\d+) +(.*?) {5}([\d,.]+) {3}(.*)", "{$1} {$2} {$3} {$4} {$5} {$6} {$7}")
+MsgBox f13=%f13%  ; f13 = "{02} {17} {2009} {238} {수표 지불} {314.15} {9,265.35}"
+
+; 13.
+; c : = "수표로 지불 02-17-2009 238 314.15 9,265.35"
+; 달러와 센트를 파싱하려면 "([\ d,.] +)를 추가하십시오 (쉼표와 소수점이있는 하나 이상의 숫자, 예 : 27,182.81)
+f14 := RegExReplace(c, "(\d\d)-(\d\d)-(\d\d\d\d) +(\d+) +(.*?) {5}([\d,.]+) {3}([\d,.]+)(.*)", "{$1} {$2} {$3} {$4} {$5} {$6} {$7} {$8}")
+MsgBox f14=%f14%
+; f14 = "{02} {17} {2009} {238} {수표 지불} {314.15} {9,265.35} {}"
+; (마지막 빈 {}은 남은 것이 없음을 나타냄)
+
+N3.4: Find the $ dollar sign. Extract price and add a $.
+$ 달러 기호를 찾아라.
+c := "xxx $17.25 yyy"
+dollar := RegExReplace(c,"(.*?)(\$)(.*)","$2")
+MsgBox dollar=%dollar%
+
+가격을 추출하고 달러 기호를 추가하십시오.
+c := "xxx 17.25 yyy"
+price := RegExReplace(c,"(.*?)([\d,.]+)(.*)","$$$2")
+msgbox price=%price%   ; 가격 = "$ 17.25"
+
+; RegExReplace의 경우 문자열 만 바꾸기 :
+; 리터럴 $를 지정하려면 $$를 사용합니다.
+; $는 RegEx 대체 문자열에서 특별한 취급을 필요로하는 유일한 문자입니다.
+; RegEx 대체 문자열에서 다른 문자를 이스케이프 처리하려면 백 슬래시가 필요하지 않습니다.
+; (RegEx 검색 문자열에는 여전히 많은 문자가 이스케이프되어야합니다.)
+
+
+
+/****************************************************************************** 
+O:  Misc AutoHotkey Notes & Debugging Tips 
+
+O1: Notes / Caveats 
+
+NOTE: 
+ALL VARIABLES ARE STORED AS CHARACTER STRINGS !!! 
+Strings containing numbers are converted to numbers when needed, and the result is converted back to a string.
+NOTE: 
+Closing */ must be first thing on line. Otherwise you'll be asking yourself, "Why does my script stop running at this point, as if the whole rest of the script was commented out?" 
+
+
+MsgBox Hello
+/* here is a comment
+and another comment */
+MsgBox Goodbye    ;이 메시지는 절대로 보지 못할거야.
+
+MsgBox Hello
+/* here is a comment
+and another comment
+*/
+MsgBox Goodbye    이제 괜찮아.
+NOTE: 
+
+      Space here ruins function call
+      ↓
+MyFunc (Param1)
+
+MyFunc(Param1)
+When sending text, if there are problems, sometimes it helps to throw in a short delay (Sleep 100), or to slow down the sending of characters by using SetKeyDelay (e.g. SetKeyDelay 90) 
+
+MsgBox: You may need to manually restore focus to your current window after a call to MsgBox. I was debugging an AutoHotkey script by throwing in a bunch of MsgBox messages, and I discovered a problem that focus wasn't being returned to my window after the MsgBox timed out. So, I added a WinActivate after MsgBox to restore focus to my window, and all was well again. 
+(May have been caused by cross contamination from another unrelated program. I'm so tired of debugging Windows programs only to discover there's nothing wrong with the program I'm debugging, it's the Windows OS itself that's been corrupted by a completely unrelated program. I thought those days were long behind us.) 
+Update: I had another case where this fix was exactly the wrong thing to do. The "current window" wasn't the one I wanted. Removing the WinExist/WinActivate combo fixed the problem. (Alas, no solution is universal.)
+
+O2: Sending Debug Data To A Log File
+; 예 1. 메시지 기록
+SetWorkingDir, %A_ScriptDir%  ;이 스크립트 파일이있는 기본 디렉토리를 설정하십시오
+LogFile := "MyLog.txt"
+FileAppend, This is a message`n, %LogFile%  ; (줄 바꿈 (`n)을 사용하여 새 줄을 시작합니다.) 원하는 경우 선행 (`n)이 될 수 있습니다.
+; 예 2. 시간 소인 포함
+SetWorkingDir, %A_ScriptDir%  ;이 스크립트 파일이있는 기본 디렉토리를 설정하십시오
+LogFile := "MyLog.txt"
+FormatTime, TimeString, , yyyy-MM-dd hh:mm:ss tt
+FileAppend, `n%TimeString% : This is a message`n, %LogFile%
+; 예제 3. LogMsg라는 함수에 모든 것을 넣는다.
+SetWorkingDir, %A_ScriptDir%  ;이 스크립트 파일이있는 기본 디렉토리를 설정하십시오
+LogFile := "MyLog.txt"
+LogMsg("This is a message")   ; 참고 LogMsg는 각 메시지가 새 줄에서 시작하도록 선행 (`n)을 추가합니다
+LogMsg("Variable X = " . X )  ; 점을 사용하여 연결하십시오.
+ExitApp
+
+;---------------------------
+여기에 우리의 기능이 있습니다.
+LogMsg( msg )
+{
+  global LogFile
+  FormatTime, TimeString, , yyyy-MM-dd hh:mm:ss tt
+  FileAppend, `n%TimeString% : %msg%, %LogFile%
+}
+Update: I've had cases where using FileAppend too frequently causes it to occasionally fail. An expected line in the log file just isn't there. You can check ErrorLevel, but there's no way to get further info on why it failed. Tech note: This may be because FileAppend closes the file every time. That can be a lot of opening/closing a file. 
+
+
+O3: Capturing a screen image during run using IrfanView
+/******************************************************************************
+Capturing a screen image during run using IrfanView (www.irfanview.com)
+*/
+RunWait "C:\Program Files\IrfanView\i_view32.exe" "/capture=1  /convert=C:\TEMP\MyImage.bmp"
+
+
+/****************************************************************************** 
+P:  Misc AutoHotkey Scripts: 
+
+P1: Misc AutoHotkey Scripts
+Laptop Low Battery Alert (BatteryDeley): http://www.autohotkey.com/forum/viewtopic.php?t=40683
+Laptop Battery Indicator (PowerCircle): http://powercircle.aldwin.us/
+Laptop Battery Indicator (PowerMeter+): http://mattcollinge.wordpress.com/software/power-meter-plus/
+System Uptime: http://www.autohotkey.com/forum/topic18534.html
+DimScreen: http://www.donationcoder.com/Software/Skrommel/#DimScreen
+Extract Informations about TaskButtons http://www.autohotkey.com/forum/viewtopic.php?t=18652
+Extra mouse button does left click & hold (one line script)
+XButton2::click down
+
+P2: Index of notable scripts found in the AutoHotkey Forum : http://www.autohotkey.com/wiki/index.php?title=Script_Listing
+1 AutoHotkey Related
+1.1 Ports/custom builds
+1.1.1 Windows NT+
+1.1.2 Windows CE
+1.1.3 Windows/Linux/Mac (.NET/Mono)
+1.2 Compile AutoHotkey yourself
+1.2.1 MS Visual C++
+1.2.2 GCC
+1.3 Use AutoHotkey with other programming/scripting languages
+1.3.1 Any
+1.4 Use other programming/scripting languages inline in AutoHotkey
+1.4.1 Perl
+1.4.2 C#/VB
+1.4.3 VBScript/JScript, VB/VBA/MS Office
+1.4.4 Assembly/Machine code
+1.4.5 C/C++
+1.4.6 Lisp/ECL
+1.5 Scripts
+1.6 Tools
+1.7 Editors
+2 GUI
+2.1 General
+2.2 All
+2.3 3P Controls
+2.4 MsgBox
+2.5 ListBox
+2.6 Splash
+2.7 Menu
+2.8 Templates
+2.9 Hotkey
+2.10 Button
+2.11 Hyperlink
+2.12 ListView
+2.13 Edit
+2.14 Other
+2.15 Tooltip
+2.16 TreeView
+3 Functions
+4 Audio and Video
+5 File Management and Searching
+6 File Reading & Parsing
+7 Internet related
+8 XML, HTML and BBCode
+9 Window Manipulation
+10 Keyboard Enhancements
+11 Mouse Related
+12 Clipboard Manipulation
+13 Games
+13.1 Game Related
+14 Fun
+15 Images
+16 Time and Scheduling
+17 Encryption / Encoding / Binary
+18 System Related
+19 Security
+20 Miscellaneous
+
+
+P3: AHK Functions - ƒ() 
+http://www.autohotkey.com/forum/viewtopic.php?t=8728
+AUTOHOTKEY:
+VarExist(Var) - http://www.autohotkey.com/forum/viewtopic.php?p=83371#83371
+ƒ() - Pass an array of integers to a function. http://www.autohotkey.com/forum/viewtopic.php?p=242750#242750
+STRINGS:
+SetWidth(Str,Width,AlignText) - increase a string's length by adding spaces to it and aligns it Left/Center/Right.
+NumFormat( Number, Width, Dec, PadChar ) - format a float. Pad leading characters (any character) to a numeric string.
+Replicate(chr,x) 
+Replicate(chr(196),80) - creates a horizontal ruling 80 characters wide
+Space(Width) 
+Space(80) - 80 spaces
+UPPER(String)
+LOWER(String)
+PROPER(String)
+http://www.autohotkey.com/forum/viewtopic.php?p=53028#53028
+RandStr() - Generates and returns a Random string. http://www.autohotkey.com/forum/viewtopic.php?p=217712#217712
+HashStr() - Hashes a String and returns value as hex.
+Hash() - Hashes a Byte-array and returns value as hex.
+http://www.autohotkey.com/forum/viewtopic.php?p=231784#231784
+Last Day Of Month (e.g. 30, 31, 28, 29) LDOM() - http://www.autohotkey.com/forum/viewtopic.php?p=54502#54502 
+- YearMonthDay format - http://www.autohotkey.com/forum/viewtopic.php?p=54532#54532
+COLOR:
+HEX2RGB(HEXString,Delimiter="")
+RGB2HEX(RGBString,Delimiter="")
+CheckHexC(HEXString) - validates a "Hex Color Code" by calling the above two functions. 
+Examples: 
+HEX2RGB("FFFFFF") -> "255,255,255" 
+RGB2HEX("255,255,255") -> "FFFFFF" 
+CheckHexC("FFFFFF") -> 1 
+CheckHexC("GOYYAH") -> 0
+http://www.autohotkey.com/forum/viewtopic.php?p=58125#58125 
+
+ChooseColor() - wrapper function for windows ChooseColor Dialog. http://www.autohotkey.com/forum/viewtopic.php?p=103432#103432
+ColorAdjL() - Adjust Luminance for a given RGB color. In other words, this function can derive a lighter / darker shade for a given RGB color. http://www.autohotkey.com/forum/viewtopic.php?p=238242#238242
+GetSysColor() - calls windows GetSysColor function http://www.autohotkey.com/forum/viewtopic.php?p=66521#66521
+windows GetSysColor function: http://msdn.microsoft.com/en-us/library/ms724371.aspx
+FILES:
+GetShortPathName(LongPath) 
+using %A_LoopFileShortPath% - http://www.autohotkey.com/forum/viewtopic.php?p=69345#69345 
+using DllCall - http://www.autohotkey.com/forum/viewtopic.php?p=69366#69366
+GetFileFolderSize(fPath) - http://www.autohotkey.com/forum/viewtopic.php?p=82689#82689
+DriveSpace() - Returns the FreeSpace / Capacity of a Drive in bytes. http://www.autohotkey.com/forum/viewtopic.php?p=92483#92483
+ShellFileOperation() - Basic Wrapper. A shell function that can be called to Copy / Move / Delete / Rename File(s). http://www.autohotkey.com/forum/viewtopic.php?p=133249#133249
+GetBinaryType() - Determines whether a file is executable, and if so, what type of executable file it is. http://www.autohotkey.com/forum/viewtopic.php?p=66383#66383
+FileGetVersionInfo() - Extracts and returns version information from an executable file. http://www.autohotkey.com/forum/viewtopic.php?p=233188#233188
+SOUND:
+SoundCard() - Returns the number of soundcards available on a system. http://www.autohotkey.com/forum/viewtopic.php?p=88891#88891
+SoundExC() - SoundEx Classic Version. Phonetic algorithm for indexing names by sound (English). http://www.autohotkey.com/forum/viewtopic.php?p=240065#240065
+IMAGES:
+ConvertGraphicsFile() - Converts image file format between GIF/BMP/JPG/PNG. http://www.autohotkey.com/forum/viewtopic.php?p=190227#190227
+VIDEO:
+AviFileInfo() - Returns the video properties of an AVI file http://www.autohotkey.com/forum/viewtopic.php?p=91036#91036
+SYSTEM:
+GetPriority(ProcessName) - http://www.autohotkey.com/forum/viewtopic.php?p=80548#80548
+ProcessOwner() - Returns the Owner for a given Process ID. http://www.autohotkey.com/forum/viewtopic.php?p=232445#232445
+ProcessCreationTime( ProcessID ) - http://www.autohotkey.com/forum/viewtopic.php?p=97186#97186
+Affinity_Set() - Sets the CPU to be used in Dual/Quad/Multi core processors / Effectively, this function allows you to choose which AHK script uses what processor. http://www.autohotkey.com/forum/viewtopic.php?p=202460#202460
+
+
+P4: Library for Text File Manipulation : http://www.autohotkey.net/~heresy/Functions/TXT.ahk 
+Basic Functions
+TXT_TotalLines
+TXT_ReadLines
+TXT_Tail
+Alignment Functions
+TXT_AlignLeft
+TXT_AlignCenter
+TXT_AlignRight
+TXT_ReverseLines
+Removement Functions
+TXT_RemoveLines
+TXT_RemoveBlankLines
+TXT_RemoveDuplicateLines
+Replacement Functions
+TXT_Replace
+TXT_RegExReplace
+TXT_ReplaceLine
+Insertion Functions
+TXT_LineNumber
+TXT_InsertLine
+TXT_InsertPrefix
+TXT_InsertSuffix
+Column Functions
+TXT_ColGet
+TXT_ColPut
+TXT_ColCut
+Trimming Functions
+TXT_TrimLeft
+TXT_TrimRight
+CSV Functions
+TXT_GetCSV
+TXT_SetCSV
+File Join/Split Functions
+TXT_ConCat
+
+
+P5: Tray Icons : http://www.autohotkey.com/wiki/index.php?title=Script_Listing 
+Master TrayIcon to control all running instances of AutoHotkey http://www.autohotkey.com/forum/viewtopic.php?p=142958#142958
+Extract Informations about TrayIcons http://www.autohotkey.com/forum/viewtopic.php?t=17314
+
+
+P6: 강제로 다른 AutoHotkey 스크립트 종료
+강제로 다른 AutoHotkey 스크립트를 종료하고 아이콘이 시스템 트레이에서 제거되도록하십시오 :
+WM_COMMAND = 0x111
+ID_FILE_EXIT = 65405
+PostMessage, WM_COMMAND, ID_FILE_EXIT, 0, , <window-title>
+예 : DimScreen 프로그램을 종료하려면 (an AutoHotkey script at http://www.donationcoder.com/Software/Skrommel/#DimScreen)
+WM_COMMAND = 0x111
+ID_FILE_EXIT = 65405
+PostMessage, WM_COMMAND, ID_FILE_EXIT, 0, , DimScreen Screen
+참고 : 위는 AutoHotkey 스크립트 (* .ahk 또는 * .exe로 컴파일 됨)에서만 작동합니다.
+ 창 제목을 확인하려면 Process Explorer를 실행하십시오.
+ AutoHotkey는 resource.h에 정의 된 다음 WM_COMMAND 번호를가집니다.
+ID_FILE_PAUSE	65403
+ID_FILE_SUSPEND	65404
+ID_FILE_EXIT	65405
+(0x111 is WM_COMMAND)
+
+기술 노트 : AutoHotkey 소스 파일 resource.h에 정의 된 다른 WM_COMMAND 번호 (이 중 어떤 것을 시도해 본적이 없습니다)
+ID_FILE_RELOADSCRIPT	65400
+ID_FILE_EDITSCRIPT	65401
+ID_FILE_WINDOWSPY	65402
+ID_FILE_PAUSE	65403
+ID_FILE_SUSPEND	65404
+ID_FILE_EXIT	65405
+ID_VIEW_LINES	65406
+ID_VIEW_VARIABLES	65407
+ID_VIEW_HOTKEYS	65408
+ID_VIEW_KEYHISTORY	65409
+ID_VIEW_REFRESH	65410
+ID_HELP_USERMANUAL	65411
+ID_HELP_WEBSITE	65412
+
+종료 (/ Suspend / Pause) 할 AutoHotkey 스크립트를 식별하는 또 다른 방법은 다음과 같습니다.
+WM_COMMAND = 0x111
+ID_FILE_EXIT = 65405
+DetectHiddenWindows, On
+
+WinGet, AList, List, ahk_class AutoHotkey       ; 실행중인 모든 AutoHotkey 프로그램 목록 만들기
+Loop %AList% {                                  ; 목록 반복
+  ID := AList%A_Index%
+  WinGetTitle, ATitle, ahk_id %ID%              ; (이것은 '창 제목'과 동일하지 않음을 알 수 있습니다)
+  MsgBox, 3, %A_ScriptName%, %ATitle%`n`nEnd?
+  IfMsgBox Cancel
+    Break
+  IfMsgBox Yes
+    PostMessage,WM_COMMAND,ID_FILE_EXIT,0,,% "ahk_id" AList%A_Index%   ; 프로세스 종료 (65404 일시 중단, 65403 일시 중지)
+}
+ExitApp
+
+
+/****************************************************************************** 
+Q:  NAVIGATING WEB SITES 
+See example file WebsiteNav.ahk 
+
+Q1:  DETERMINING WHEN A WEBPAGE HAS FINISHED LOADING 
+See FAQ: http://www.autohotkey.com/docs/FAQ.htm#load
+Method 1: Wait for status line to say "Done" 
+See example in file WebsiteNav.ahk 
+
+Method 2: call IEReady() 
+[Only works for Internet Explorer (afik)] 
+See post "Determine if a WebPage is completely loaded in IE" : http://www.autohotkey.com/forum/topic19256.html 
+See example in file WebsiteNav.ahk
+Download Com.zip from: http://www.autohotkey.net/~Sean/Lib/COM.zip 
+(See "COM Standard Library" post: http://www.autohotkey.com/forum/topic22923.html) 
+Unzip and place COM.ahk here: C:\Program Files\AutoHotkey\Lib\COM.ahk 
+Download function IEReady from: http://www.autohotkey.com/forum/topic19256.html 
+Add fuction IEReady to your .ahk code
+Place a call to IEReady() in your .ahk code when you want to wait until the page is loaded.
+
+Method 3: See "Detect when a page is loaded (reliable, cross-browser)" post: http://www.autohotkey.com/forum/topic35056.html 
+
+Methods 4,5,6,... 
+For more advanced methods see these two posts: 
+("This is left as an exercise for the student", which is what the professor says when it's over his head.)
+Automation IE7 Navigation and Scripting with Tabs 
+http://www.autohotkey.com/forum/viewtopic.php?t=30599
+IE and Gui Browser Com Tutorial 
+http://www.autohotkey.com/forum/viewtopic.php?t=34972
+
+
+Q2:  POSITION US ON A CERTAIN CONTROL 
+Examples are from simple to more complex. All examples here are demonstrated in file WebsiteNav.ahk 
+Method 1: Blindly hit the {Tab} key a certain number of times to position us where we want to be. 
+(Not very reliable. e.g. User may have Google toolbar installed, which we'd have to tab through. 
+Or perhaps Yahoo toolbar. Or no toolbar. Who knows...) 
+Example: 
+Send {Tab 34}  말하자면, 34 개의 탭은 우리가되고 싶은 곳을 우리에게줍니다.
+
+Method 2. Hit the {Tab} key until certain text appears in the status bar 
+For this example, assume we are at http://www.autohotkey.com/ and we wish to position ourselves on the Wiki link:
+; 이 예제에서는 autoHotkey "Wiki"링크를 찾을 때까지 탭합니다.
+; AutoHotkey "Wiki"링크로 이동하면 상태 표시 줄에 "http://www.autohotkey.com/wiki/"
+target := "http://www.autohotkey.com/wiki/"
+loop, 40
+{
+  sleep 10  ;이 일시 중지가 도움이 될 수 있습니다.
+  StatusBarGetText, StatBar, , AutoHotkey - Free Mouse and Keyboard Macro Program
+  if (StatBar = target)
+  {
+    goto FOUNDIT
+  }
+  Send, {Tab}
+}
+; 만약 우리가 여기서 빠져 나왔다면, 40 개의 탭 이후에 우리가 목표를 찾지 못했음을 의미합니다.
+MsgBox Failed to find %target%
+ExitApp
+
+FOUNDIT:
+MsgBox Found target %target%
+
+Method 2.5 Hit Shift+Tab to tab backwards until certain text appears in the status bar 
+(May be useful if tabbing forwards doesn't work) 
+
+Method 3. Search for word which is link you want to click on 
+
+Method 4. Jump directly to the control 
+The JavaScript method—we place some JavaScript code in the address bar and execute it to jump directly to the control. This is a faster and more reliable technique, but it's a bit more complicated to set up. We use AutoHotkey ControlSetText to place the JavaScript code in the address bar, specifying the HTML control ID, or the control NAME, of the control we want to jump to, then we use AutoHotkey ControlSend to execute that JavaScript. 
+
+For this example, assume we are at http://www.autohotkey.com/wiki/ and we wish to position ourselves in the Search field. 
+Determine the ID or NAME of the control:
+Method 1: Read and decypher the HTML source code. Look for " ID=" 
+e.g. for page http://www.autohotkey.com/wiki/ 
+we find this line of code:
+<INPUT id=searchInput title="Search AutoHotkey [f]" accessKey=f name=search>
+          ^^^^^^^^^^^                                                ^^^^^^
+Here our ID is searchInput, and our NAME is search (we only need one. Either ID or NAME. The ID is best if it's available.) 
+
+Method 2: Use a tool to help us find the ID or NAME
+Use the Microsoft "Internet Explorer Developer Toolbar" for Internet Explorer 7. 
+(Note: for Internet Explorer 8, see "Discovering Internet Explorer Developer Tools" at http://msdn.microsoft.com/en-us/library/cc848894(VS.85).aspx )
+Download and install : http://www.microsoft.com/downloads/details.aspx?familyid=E59C3964-672D-4511-BB3E-2D5E1DB91038&displaylang=en
+Navigate to your webpage (using Internet Explorer 7)
+Bring up the "IE Developer Toolbar". (Note: If you do not see the "IE Developer Toolbar" button on the toolbar, it may be off to the right. Click the right-facing arrows at the end of the IE7 command bar to view all available toolbar buttons.)
+FIND -> SELECT ELEMENT BY CLICK
+Move your mouse to the desired element and click.
+In the middle pane ('Attribute:') scroll down and find the ID string. 
+If there is no ID string, find the NAME string. 
+If there is no NAME string, cripes, it gets a bit difficult. You'll 
+have to read up on Javascript and the DOM (Document Object Model).
+Use Firefox and install the Firebug add-on at http://getfirebug.com/
+There are other similar programs to help you examine the source code for web pages. Here are a few:
+PageSpy — http://www.sembel.net
+Debugbar — http://www.debugbar.com
+
+
+For these examples assume you're at http://www.autohotkey.com/wiki/ 
+General format using ID:
+; 컨트롤의 고유 ID를 사용하여 컨트롤에 배치
+ControlSetText, Edit1, javascript:document.getElementById('<element-ID>')[0].focus()
+ControlSend, Edit1, {Enter}, <window-title>
+Sleep 100     너무 잠깐 그게 중요해.
+(Caution: getElementById is case sensitive! I originally tried getElementByID (last letter D instead of d) and it didn't work.) 
+
+Example using ID:
+; 컨트롤의 고유 ID를 사용하여 컨트롤에 배치
+; 이 예제에서 컨트롤의 ID는 searchInput입니다.
+; 창 제목에 AutoHotkey라는 단어가 포함되어 있습니다.
+ControlSetText, Edit1, javascript:document.getElementById('searchInput').focus()
+ControlSend, Edit1, {Enter}, AutoHotkey
+Sleep 100     너무 잠깐 그게 중요해.
+General format using NAME:
+; 컨트롤의 이름을 사용하여 컨트롤 위치
+ControlSetText, Edit1, javascript:document.getElementsByName('<element-name>')[0].focus()
+ControlSend, Edit1, {Enter}, <window-title>
+Sleep 100     너무 잠깐 그게 중요해.
+Example using NAME:
+; 컨트롤의 이름을 사용하여 컨트롤 위치
+; 이 예제에서 컨트롤의 NAME은 검색입니다.
+; 창 제목에 AutoHotkey라는 단어가 포함되어 있습니다.
+ControlSetText, Edit1, javascript:document.getElementsByName('search')[0].focus()
+ControlSend, Edit1, {Enter}, AutoHotkey
+Sleep 100     너무 잠깐 그게 중요해.
+If more than one control has the same name:
+Go kick George Foreman in the shin for naming all 5 of his sons "George" (and two of his daughters).
+Then figure out what number to use instead of [0] to get to the n'th control with that NAME. 
+
+(Note: There is no legal way to use the NAME attribute from such tags as DIV or SPAN, according to the W3C HTML 4.01 specs. You must confine the usage of this attribute to such tags as INPUT, IMG, FRAME, IFRAME, FORM, MAP, PARAM, META, OBJECT, A, SELECT, APPLET, TEXTAREA, or BUTTON. (Those who use XML or XHTML or XFILES or whatever may have different rules to play by.)
+
+If the control you want has no ID or NAME:
+Argh! This is getting hard! You'll have to go read up about JavaScript and the DOM (Document Object Model) 
+Some things you could try:
+ javascript:document.getElementsByTagName('a')[6].focus() ; 문서에서 7 번째 <A> 태그를 가져옵니다 (번호 매기기는 0으로 시작합니다).
+javascript:document.links[6].focus()                     ; 문서에서 7 번째 링크를 가져옵니다 (번호 매기기는 0으로 시작합니다).
+
+Methods 5,6,7,...
+For more advanced methods see these two posts:
+Automation IE7 Navigation and Scripting with Tabs 
+http://www.autohotkey.com/forum/viewtopic.php?t=30599 
+IE and Gui Browser Com Tutorial 
+http://www.autohotkey.com/forum/viewtopic.php?t=34972 
+("This is left as an exercise for the student", which again is what the professor says when it's over his head.)
+
+
+Q3: SEARCH FOR A COLORED PIXEL 
+Note: If I'm searching a white background for black text, I find it works better to search for "not white" rather than search for "black", because sometimes that black text isn't really black when you look at it closely. 
+
+The following actually goes quite fast if you comment out the moving of the mouse. I move the mouse here for demonstration purposes. 
+WinGetPos, winposX, winposY, Width, Height, A  창 가져 오기 너비, 높이
+; MsgBox, 0,, ​​winposX = % winposX % n winposY = % winposY %`nWidth = % 너비 % nHeight = % 높이 %
+
+; 시작 위치 계산
+X := Width - 60
+Y := Height / 2
+MouseMove, X, Y, 7
+
+MsgBox, 0, , Move left until we find "not white", 1.2
+
+우리가 "흰색이 아님"을 찾을 때까지 왼쪽으로 움직입니다.
+loop 200
+{
+    MouseMove, X, Y, 0
+    PixelGetColor, color, X, Y, RGB
+    ; MsgBox, 0,, ​​color = % color %, 0.1
+    if (color <> "0xFFFFFF")
+    {
+      Goto FOUND_TCOLOR
+    }
+    X -= 1
+}
+우리가 여기서 빠져 나간다는 것은 우리가 목표를 찾지 못했다는 것을 의미한다.
+MsgBox, 0, , Failed to find color "not white", 2
+goto Exit
+
+FOUND_TCOLOR:
+MsgBox, 0, , Found "not white". color = %color%, 2
+
+Exit:
+MsgBox, 0, , The End, 2
+ExitApp
+
+/************************************************ 
+R:  NEWBIE RECOMMENDED LEARNING SEQUENCE 
+Reference: Recommended by jaco0646 (thank you jaco0646) 
+http://www.autohotkey.com/forum/viewtopic.php?t=29204)
+Commands dealing with files start with FILE
+Commands dealing with windows start with WIN
+Commands dealing with text start with STRING
+Similarly:
+Commands that retrieve data from somewhere contain GET
+Commands that apply data to somewhere contain SET
+
+Suggested order of study for AutoHotkey newbies: 
+First:
+read the Tutorial
+the Scripts page
+the FAQ
+
+Afterwards, recommend learning concepts in the following order:
+Hotstrings
+Hotkeys
+Mouse Clicks & Mouse HotKeys
+Variables
+Loops - especially Parsing Loops
+String commands - (e.g. StringMid, StringReplace)
+If,Else statements
+Expressions
+Arrays & Dynamic variables - (StringSplit)
+GoSub & Functions
+GUIs
+Windows Messages
+DllCall
+
+
+/****************************************************************************** 
+S:  PRESS ESC TO CANCEL THIS SCRIPT 
+Defining Hotkeys 
+A hotkey definition line stops execution at that point, so if you want the 
+script to run to the end but have the ESC key available to terminate the script, 
+put the hotkey definition at the end, just after your ExitApp statement.
+;이 스크립트를 취소하려면 ESC 키를 누릅니다.
+Esc::ExitApp
+
+/****************************************************************************** 
+T:  THE AUTOHOTKEY RUN COMMAND 
+
+Program:
+Run, ShowParams.exe  hello  goodbye  Friday
+AutoHotkey script:
+Run, autohotkey.exe  ShowParams.ahk  hello  goodbye  Friday
+VBScript:
+Run, cscript.exe  ShowParams.vbs  hello  goodbye  Friday
+JScript:
+Run, cscript.exe  ShowParams.js  hello  goodbye  Friday
+Any command:
+                    ┌───── cmd.exe strips off these outer " ───────┐
+Run, "%comspec%" /c ""ShowParams.ahk"  "hello"  "goodbye"  "friday"", , Hide
+Hide is specified to prevent the Command Prompt Window from popping up. 
+/c causes Command Prompt Window to exit after command is executed. 
+/k instead of /c would cause Command Prompt Window to remain open after command is executed. Useful for debugging. 
+
+Notes:
+AutoHotkey scripts: 
+Why does specifying just 'autohotkey.exe' work? Because the AutoHotkey installer adds the following entry to the registry:
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\AutoHotkey.exe] 
+@="C:\\Program Files\\AutoHotkey\\AutoHotkey.exe"
+
+VBscript and JScript: 
+You may also use wscript.exe — wscript.exe is the windows version, cscript.exe is the console version. You'll find them in the System32 directory. 
+(JScript is Microsoft's own version of JavaScript.) 
+
+The comspec environment variable usually equates to C:\Windows\System\System32\cmd.exe . On Windows 95,98,ME it equates to COMMAND.COM . It's also possible the user may have changed it to run a fancier command prompt such as JPSoft's Take Command command line utility (http://jpsoft.com) 
+
+The AutoHotkey RUN command currently does not parse <target> the way you'd expect it to, so the results often aren't quite what you wanted. Here's how it works:
+Autohotkey parses off the <target> parameter. 
+The <target> parameter is delimited by a comma, so if you want to include a comma somewhere in the target parameter, you need to escape it with a `
+Autohotkey expands any variables (e.g. %day%). 
+Variables are delimited by %, so if you want to include a literal % somewhere in the <target> parameter, you need to escape it with a `
+AutoHotkey tries calling CreateProcess() passing the processed <target> parameter as the lpCommandLine argument.
+If CreateProcess() fails, AutoHotkey tries calling ShellExecute() passing the processed <target> parameter as the lpFile parameter. Note: This is where it would be nice if AutoHotkey would split <target> between the command and parameters, passing the command as lpFile and the parameters as lpParameters, but it doesn't. It instead passes the entire line as the lpFile parameter, leaving the lpParameters argument NULL. The reason for this is the design decision mentioned in the AutoHotkey source code file script.cpp routine ActionExec: "User can launch a document name containing spaces without having to enclose it in double quotes."
+
+An alternative to using Run is to directly call ShellExecute() :
+command = ShowParams.ahk
+params = hello goodbye Friday
+res := DllCall("shell32\ShellExecuteA"
+      , "UInt", 0             ; hwnd
+      , "UInt", 0             ; lp 운영
+      , "Str", command        ; lp 파일
+      , "Str", params         ; lpParameters
+      , "Str", A_WorkingDir   ; lpDirectory
+      , "UInt", 0)            ; nShowCmd
+MsgBox (%ErrorLevel%) %res%
+
+/****************************************************************************** 
+U:  PASSING PARAMETERS TO AUTOHOTKEY SCRIPTS 
+On Windows, parameters are parsed off the command line after the new process is created, by the new process. It's considered the responsibility of the newly started application to call the GetCommandLine() API to retrieve the command line string and parse it.
+How does a C/C++ program on Windows get argv[]? The C/C++ compiler which compiles the program secretly adds extra code to the executable that retrieves and parses the command line to extract the parameters before calling WinMain (or main). Thus, for a C/C++ executable on Windows, the parameter parsing rules are determined by the C/C++ compiler that compiled the program.
+
+AutoHotkey is written in C++ and obtains its parameters via the argv[] vector.1 Thus it uses the Microsoft C/C++ Parameter Parsing Rules. The rules are:
+
+Parameters are always separated by a space or tab (multiple spaces/tabs OK) 
+If the parameter does not contain any spaces, tabs, or double quotes, then all the characters in the parameter are accepted as is (there is no need to enclose the parameter in double quotes). 
+Enclose spaces and tabs in a double quoted part 
+A double quoted part can be anywhere within a parameter 
+2n backslashes followed by a " produce n backslashes and start or end a double quoted part 
+2n+1 backslashes followed by a " produce n backslashes + a literal quotation mark 
+n backslashes not followed by a quotation mark produce n backslashes 
+If a closing " is followed immediately by another ", the 2nd " is accepted literally and added to the parameter (this is the undocumented rule)
+For more on passing parameters to programs, with numerous examples, see the essay How Command Line Parameters Are Parsed 
+
+Notes:
+1. Actually AutoHotkey uses the __argv[] vector.
+
+/****************************************************************************** 
+V:  PASSING PARAMETERS TO ANY PROGRAM 
+You aren't sure how to escape the special characters in that parameter so it comes out right? See the essay How Command Line Parameters Are Parsed 
+
+
+/****************************************************************************** 
+
+My title: "" %% (), And All That, is taken from the wonderful book, Div, Grad, Curl, And All That: An Informal Text on Vector Calculus by H. M. Schey (1973) 
+
+History: 
+Version 1.00 02/28/2009 
+Version 1.04 03/08/2009 
+Version 1.05 03/09/2009 
+Version 1.09 03/26/2009 
+Version 1.10 04/30/2009 
+Version 1.12 05/15/2009 
+Version 1.14 05/24/2009 
+Version 1.19 06/01/2009 
+Version 1.21 08/24/2009 
+Version 1.22 01/02/2011
