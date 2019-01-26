@@ -1,15 +1,9 @@
-﻿;$OBFUSCATOR: $FUNCS_CHANGE_DEFAULTS: ,, -1
-;$OBFUSCATOR: $PARAMS_CHANGE_DEFAULTS: ,, -1
-;$OBFUSCATOR: $LABELS_CHANGE_DEFAULTS: ,, -1
-;$OBFUSCATOR: $GLOBVARS_CHANGE_DEFAULTS: ,, -1
-;$OBFUSCATOR: $LOSVARS_CHANGE_DEFAULTS: ,, -1 
-
-
-
+﻿#Include MyLib.ahk
+#Include Gdip.ahk
+#Include Gdip_ImageSearch.ahk
 
 OnMessage(0x20a, "WM_MOUSEWHEEL")
 OnMessage(0x203, "WM_LBUTTONDBLCLK")
-
 
 #ErrorStdOut
 #SingleInstance Force
@@ -35,6 +29,7 @@ global G_Hwnd :=
 global G_File := 
 global G_Num :=
 global G_Title :=
+global G_GuiHwnd :=
 
 Gui, +hwndhMyGUI
 Gui, +AlwaysOnTop +Owner -SysMenu
@@ -51,21 +46,10 @@ Gui, Add, Edit, xp-99 yp+20 w300 h20 0x800,
 Gui, Add, Button, xp-1 yp+24 w60 h22 Disabled, 검색
 ;Gui, Add, StatusBar,, 상태바이다
 Gui, Show, x1400 w350, >
-OnMessage(0x201, "cl")
-OnMessage(0x202, "cl")
+G_GuiHwnd := WinExist("A")
 Return 
  
-cl(wParam, lParam, message, hwnd)
-{
-	MouseGetPos,,,, Gui
-	if (Gui == "Edit1" || Gui == "Edit2")
-	{
-		ToolTip, 무시하라고
-		return
-	}
-}
-
-WM_LBUTTONDBLCLK(wParam, lParam, message, hwnd)
+WM_LBUTTONDBLCLK(wParam, lParam, message, hwnd) 
 {
 	MouseGetPos,,,, Gui
 	if (Gui == "Edit1" && G_Title) ; 컨트롤이름이 Edit1이면서 G_Title가 안비어져 있을때
@@ -75,18 +59,18 @@ WM_LBUTTONDBLCLK(wParam, lParam, message, hwnd)
 		Sleep, 500
 		ToolTip
 	}
-	else if (Gui == "Edit2" && G_File)
+	else if (Gui == "Edit2" && G_File) 
 	{
 		Clipboard := G_File
 		ToolTip, 파일명 복사됨
 		Sleep, 500
 		ToolTip
 	}
+	ControlFocus
+	ControlFocus, ahk_id %G_GuiHwnd%
+	; SendMessage, 0x7, 0, 0,,A
 
 }
-
-
-
 
 Button컨트롤:
 if (flag := !flag)
@@ -126,7 +110,7 @@ WM_MOUSEWHEEL(wParam, lParam, message, hwnd)
 				G_Num += 10
 			else
 				G_Num++
-			if (G_List[1] < G_Num)
+			if (G_List[1] < G_Num) 
 				G_Num := G_List[1]
 		}		
 		if (G_Num <= 0)
@@ -137,13 +121,19 @@ WM_MOUSEWHEEL(wParam, lParam, message, hwnd)
 	}
 	return
 }
-
+ 
 
 
 Button창선택:
 Gui, Show,, > 원하는창 선택후 스페이스를 눌려주세요
+GuiControl,, Edit1,
 Block_Hotkey("Space") ; 해당키가 눌려야 다음으로 진행
-G_Hwnd := WinExist("A") ; 현재 활성화된 창의 고유아이디를 가져온다.
+G_Hwnd := WinExist("A") ; 현재 활성화된 창의 고유아이디를 가져온다. 
+if (G_GuiHwnd == G_Hwnd) 
+{
+	GuiControl,, Edit1, % "현재창 말고 다른창을 선택해주세요"
+	return
+}
 WinGetActiveTitle, G_Title
 GuiControl, Enable, Button4
 GuiControl,, Edit1, % G_Title
@@ -151,16 +141,26 @@ Gui, Show,, % ">"
 return
 
 Button파일선택:    
-Gui, Submit 
+Gui, Submit
+GuiControl,, Edit2,
 tempfile := G_File
 FileSelectFile, G_File
 if (!G_File) ; 비어있을경우
+{
+	if (!tempfile) 
+	{
+		GuiControl,, Edit2, % "찾고자하는 이미지파일을 선택해주세요"
+		Gui, Show
+		return
+	}
 	G_File := tempfile
+}
 else
-	GuiControl, Enable, Button5
+{
+	GuiControl, Enable, Button5 
+}
 Guicontrol,, Static1,
 GuiControl,, Edit2, % G_File
-
 Gui, Show
 return
 
@@ -184,11 +184,3 @@ Return
 
 GuiClose:
 ExitApp
-
-
-;$OBFUSCATOR: $IGNORE_AFTER_THIS: 
-#Include MyLib.ahk
-#Include Gdip.ahk
-#Include Gdip_ImageSearch.ahk
-
-

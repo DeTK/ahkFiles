@@ -1,7 +1,7 @@
 ﻿
 ; 사용한 라이브러리
-; #Include Gdip.ahk
-; #Include Gdip_ImageSearch.ahk
+#Include Gdip.ahk
+#Include Gdip_ImageSearch.ahk
 
 ; ====================================================================================================
 ; 비활성으로 해당 좌표 클릭하기
@@ -37,32 +37,34 @@ Inactive_Click(f_Lparam, f_Title, f_ClickCount = 1)
 ;
 ; 리턴값 = [찾은갯수, [이미지길이, 이미지높이], 찾은이미지좌표lparam...] 또는 "NoList"
 ; ====================================================================================================
+
 Inactive_Search(f_ID, f_File, f_X = 0, f_Y = 0)
 {	
-    Token := Gdip_Startup() ; gdip을 라이브러리를 사용한다.
-    haystack := Gdip_BitmapFromHWND(f_ID) ; 검색할 화면 [Gdip_BitmapFromScreen() ; 전체화면]
-    needle := Gdip_CreateBitmapFromFile(f_File) ; 찾고자하는 이미지
-    Gdip_GetImageDimensions(needle, W, H) ; 찾고자하는 이미지의 길이와 높이를 가져온다.
-    imageFoundNum := Gdip_ImageSearch(haystack, needle, LIST, 0, 0, 0, 0, 0, 0xFFFFFF, 1, 0) ; 이미지 찾은갯수를 반환
-    Gdip_DisposeImage(haystack) ;초기화 해준다.
-    Gdip_DisposeImage(needle) ; 초기화 해준다.
-    Gdip_Shutdown(Token) ; 꺼준다
+	Token := Gdip_Startup() ; gdip을 라이브러리를 사용한다.
+	haystack := Gdip_BitmapFromHWND(f_ID) ; 검색할 화면 [Gdip_BitmapFromScreen() ; 전체화면]
+	needle := Gdip_CreateBitmapFromFile(f_File) ; 찾고자하는 이미지
+	Gdip_GetImageDimensions(needle, W, H) ; 찾고자하는 이미지의 길이와 높이를 가져온다.
+	imageFoundNum := Gdip_ImageSearch(haystack, needle, LIST, 0, 0, 0, 0, 0, 0xFFFFFF, 1, 0) ; 이미지 찾은갯수를 반환
+	Gdip_DisposeImage(haystack) ;초기화 해준다.
+	Gdip_DisposeImage(needle) ; 초기화 해준다.
+	Gdip_Shutdown(Token) ; 꺼준다
 
 	if (imageFoundNum > 0)  ; 이미지를 하나이상 찾은 경우
 	{
-        makeLparamList := [imageFoundNum,[W,H]]
+		makeLparamList := [imageFoundNum,[W,H]]
 
-        for i, v in StrSplit(LIST, "`n") ; 엔터를 기준으로 배열화 한다.
-        {
-            StringSplit, location, v, `, ; , 기준으로 나눠준다.
-            makeLparamList.insert(Make_Lparam(location1 + f_X, location2 + f_Y)) ; x or y 의 비트를 왼쪽으로 2번 이동한 lparam으로 바꿔준다.
-            ;OutputDebug, % "x = " (location1 + f_X) " y = " (location2 + f_Y) " lparam = " makeLparamList[i + 2]
-        }
+		for i, v in StrSplit(LIST, "`n") ; 엔터를 기준으로 배열화 한다.
+		{
+			StringSplit, location, v, `, ; , 기준으로 나눠준다.
+			makeLparamList.insert(Make_Lparam(location1 + f_X, location2 + f_Y)) ; x or y 의 비트를 왼쪽으로 2번 이동한 lparam으로 바꿔준다.
+			;OutputDebug, % "x = " (location1 + f_X) " y = " (location2 + f_Y) " lparam = " makeLparamList[i + 2]
+		}
 		return makeLparamList ; 찾은 이미지의 lparam 리스트
 	}
 
-    return "NoList" ; 못찾았으므로 NoList 반환
+	return "NoList" ; 못찾았으므로 NoList 반환
 }
+
 ; ====================================================================================================
 ; GDI 생성
 ; 함수명 = Create_GDI (GDI 생성)
