@@ -20,17 +20,17 @@ SetTitleMatchMode, 2
 CoordMode, Mouse, Relative
 CoordMode, Pixel, Relative
 CoordMode, ToolTip, Relative
-SetBatchLines, -1
+SetBatchLines, -1 
 Process, Priority,, High 
 ListLines, Off 
 
-global G_List := 
-global G_Hwnd := 
-global G_File := 
+global G_List :=        
+global G_Hwnd :=  
+global G_File :=   
 global G_Num :=
-global G_Title :=
+global G_Title :=    
 global G_GuiHwnd :=
-
+global MyLib := new MyLib()
 Gui, +hwndhMyGUI
 Gui, +AlwaysOnTop +Owner -SysMenu
 Gui, Add, Button, x150 y5 w60 h20 gGuiClose, 닫기
@@ -95,7 +95,7 @@ WM_MOUSEWHEEL(wParam, lParam, message, hwnd)
 	MouseGetPos,,,, Gui
 	if (Gui == "Button5" && G_List) ; 현재 컨트롤의 이름 리스트가 빈값이 아닐때
 	{
-		Create_GDI()
+		MyLib.create_GDI()
 		GetKeyState, key, LAlt, P
 		if (wParam == 7864320) ; 휠 올림
 		{
@@ -111,13 +111,13 @@ WM_MOUSEWHEEL(wParam, lParam, message, hwnd)
 			else
 				G_Num++
 			if (G_List[1] < G_Num) 
-				G_Num := G_List[1]
+				G_Num := 1
 		}		
 		if (G_Num <= 0)
-			Create_Square(0,0,0), Delete_GDI(), G_Num := 0
+			MyLib.create_Square(0,0,0), MyLib.Delete_GDI(), G_Num := 0
 		else if (G_Num > 0)
-			Create_Square(G_Hwnd, G_List, G_Num)
-		Delete_GDI()
+			MyLib.create_Square(G_Hwnd, G_List, G_Num)
+		MyLib.Delete_GDI()
 	}
 	return
 }
@@ -127,7 +127,7 @@ WM_MOUSEWHEEL(wParam, lParam, message, hwnd)
 Button창선택:
 Gui, Show,, > 원하는창 선택후 스페이스를 눌려주세요
 GuiControl,, Edit1,
-Block_Hotkey("Space") ; 해당키가 눌려야 다음으로 진행
+MyLib.Block_Hotkey("Space") ; 해당키가 눌려야 다음으로 진행
 G_Hwnd := WinExist("A") ; 현재 활성화된 창의 고유아이디를 가져온다. 
 if (G_GuiHwnd == G_Hwnd) 
 {
@@ -166,9 +166,15 @@ return
 
 
 Button검색:
+; if (MyLib)
+; {
+; 	MyLib :=
+; 	MyLib := new MyLib()
+; }
 Gui, Submit, NoHide
 ; 핸들, 파일이름
-G_List := Inactive_Search(G_Hwnd, G_File)
+Gui, Show,, % "> 찾는중..."
+G_List := MyLib.search_InactiveImage(G_Hwnd, G_File)
 G_Num := 0
 Guicontrol,, Static1,
 if (G_List[1])
