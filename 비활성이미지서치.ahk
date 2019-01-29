@@ -89,6 +89,8 @@ WM_MOUSEMOVE(wParam, lParam, message, hwnd)
 }
 
 
+
+
 WM_MOUSEWHEEL(wParam, lParam, message, hwnd)
 {
 	;ToolTip, % wParam " " lParam " " message " " hwnd " " Gui
@@ -97,24 +99,24 @@ WM_MOUSEWHEEL(wParam, lParam, message, hwnd)
 	{
 		if (MyLib.GetAsyncKeyState("LCtrl"))  ; 첫번째순번 아래일 경우
 		{
-			G_Num := 0  ; 무조건 1
 			MyLib.createSquare(0, 0, 0)
 			return
 		}
 		if (wParam == 7864320) ; 휠 올림
 		{
-			G_Num := MyLib.GetAsyncKeyState("LAlt") ? (G_Num - 10) : (G_Num - 1)
+			G_Num := MyLib.GetAsyncKeyState("LAlt") ? (G_Num - 5) : (G_Num - 1)
+			
 			G_Num := (G_Num == 0) ? G_List[1]
-				: (G_Num < 0) ? (G_List[1] + G_Num) : G_Num
+				: (G_Num > 0) ? G_Num
+				: (G_Num := G_List[1] + G_Num) 
 			
 		}
 		else if (wParam == 4287102976) ; 휠 내림
 		{
-			G_Num := MyLib.GetAsyncKeyState("LAlt") ? (G_Num + 10) : (G_Num + 1)
-			; 찾은이미지수가 클경우가 이거나 찾은이미지수량 == (현재순번 - 찾은이미지수랑) 인경우 그대로
-			G_Num := ((G_Num <= G_List[1]) || (G_List[1] == (G_Num - G_List[1]))) ? G_Num
-				; 아닌경우 찾은이미지의수보다 현재순번보다 큰경우 현재순번 - 찾은숫자
-				: (G_List[1] < G_Num) ? (G_Num - G_List[1]) : G_Num
+			G_Num := MyLib.GetAsyncKeyState("LAlt") ? (G_Num + 5) : (G_Num + 1)
+
+			G_Num := (G_Num == G_List[1] + 1) ? 1
+				: (G_Num > G_List[1]) ? Mod(G_Num, G_List[1])
 		}
 		ToolTip, % G_Num,100,
 		MyLib.createSquare(G_Hwnd, G_List, G_Num)
