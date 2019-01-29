@@ -93,7 +93,6 @@ class MyLib
 			{
 				StringSplit, location, v, `, ; , 기준으로 나눠준다.
 				makePosList.insert([location1 + x, location2 + y]) ; x or y 의 비트를 왼쪽으로 2번 이동한 lparam으로 바꿔준다.
-				;OutputDebug, % "x = " (location1 + f_X) " y = " (location2 + f_Y) " lparam = " makeLparamList[i + 2]
 			}
 		}
 
