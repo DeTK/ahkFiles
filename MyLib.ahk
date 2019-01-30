@@ -17,6 +17,7 @@ class MyLib
 	createSquare(winId, posList, imageNum)
 	{
 		global
+		Gui, GUI_Drawing: Destroy
 		Gui, GUI_Drawing: +AlwaysOnTop +E0x20 -Caption +E0x80000 -Border +ToolWindow +OwnDialogs +Owner  +LastFound
 		Gui, GUI_Drawing: Show, NA, GUI_Drawing
 		GDI_Token := Gdip_Startup()
@@ -197,17 +198,18 @@ class MyLib
 			originalList.Push(f_Arr.RemoveAt(len - (A_Index - 1)))
 		return
 	}
-	; ########################################################################################################################################################################################################
-	; ########################################################################################################################################################################################################
-	; 실시간 키눌림 확인
-	; Funtion Name = GetAsyncKeyState
+}
 
-	; key = 키이름
-	GetAsyncKeyState(key)
-	{
-		key := GetKeyVK(Key)
-		return (Format("{:X}", DllCall("user32\GetAsyncKeyState", "int", key) & 0x8000) == 8000) ? 1 :
-	}
+; ########################################################################################################################################################################################################
+; ########################################################################################################################################################################################################
+; 실시간 키눌림 확인
+; Funtion Name = GetAsyncKeyState
+
+; key = 키이름
+GetAsyncKeyState(key)
+{
+	key := GetKeyVK(Key)
+	return (Format("{:X}", DllCall("user32\GetAsyncKeyState", "int", key) & 0x8000) == 8000) ? 1 :
 }
 
 ; 진수변환    3번째인자의진수   바꿀진수   바꿀숫자

@@ -6,7 +6,7 @@ MouseGetPos, x, y
 ToolTip, % "x = " x " y = " y " (해당키가 눌려야 나온다.)"
 return
 
-Block_Hotkey(Hotkey)
+Block_Hotkey(Hotkey) 
 {
     Hotkey, % Hotkey, re
     Keywait, % Hotkey, D  ; 해당키의 다운을 기다림
