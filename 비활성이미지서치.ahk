@@ -97,26 +97,29 @@ WM_MOUSEWHEEL(wParam, lParam, message, hwnd)
 	MouseGetPos,,,, Gui
 	if (Gui == "Button5" && G_List) ; 현재 컨트롤의 이름 리스트가 빈값이 아닐때
 	{
-		if (MyLib.GetAsyncKeyState("LCtrl"))  ; 첫번째순번 아래일 경우
+		if (GetAsyncKeyState("LCtrl"))  ; 첫번째순번 아래일 경우
 		{
 			MyLib.createSquare(0, 0, 0)
 			return
 		}
 		if (wParam == 7864320) ; 휠 올림
 		{
-			G_Num := MyLib.GetAsyncKeyState("LAlt") ? (G_Num - 5) : (G_Num - 1)
-			
-			G_Num := (G_Num == 0) ? G_List[1]
-				: (G_Num > 0) ? G_Num
-				: (G_Num := G_List[1] + G_Num) 
+			G_Num := GetAsyncKeyState("LAlt") ? (G_Num - 10) : (G_Num - 1)
+
+			While (G_Num <= 0)
+			{
+				G_Num := G_List[1] + G_Num
+			}
 			
 		}
 		else if (wParam == 4287102976) ; 휠 내림
 		{
-			G_Num := MyLib.GetAsyncKeyState("LAlt") ? (G_Num + 5) : (G_Num + 1)
+			G_Num := GetAsyncKeyState("LAlt") ? (G_Num + 10) : (G_Num + 1)
 
-			G_Num := (G_Num == G_List[1] + 1) ? 1
-				: (G_Num > G_List[1]) ? Mod(G_Num, G_List[1])
+			While (G_List[1] < G_Num)
+			{
+				G_Num := G_Num - G_List[1]
+			}
 		}
 		ToolTip, % G_Num,100,
 		MyLib.createSquare(G_Hwnd, G_List, G_Num)
