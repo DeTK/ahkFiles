@@ -30,6 +30,7 @@ DATA = %DATA%
 DATA2 = %DATA2%
 
 global WEB := ComObjCreate("InternetExplorer.Application")
+
 WEB.Navigate("https://nid.naver.com/nidlogin.login?url=http://www.naver.com") 
 Check()
 WEB.document.getElementById("id").value:="wmf2225"

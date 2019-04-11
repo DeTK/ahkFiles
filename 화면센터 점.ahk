@@ -15,7 +15,7 @@ SetControlDelay -1                                       ;각 콘트롤 변경 �
 ;SendMode, input                                          ;Send만 입력해도 Sendinput으로 인식
 ListLines, off                                           ;최근에 실행된 스크립트 줄 안보여줌
 
-Gui, +AlwaysOnTop +ToolWindow  -Resize -MaximizeBox -caption Dpi
+Gui, +AlwaysOnTop +ToolWindow  -Resize -MaximizeBox -caption
  
 
 ;Gui, Add, Picture, x0 y0 w18 h18 ,D:\새 폴더 (4)\Users\DeTK\Documents\투명.png

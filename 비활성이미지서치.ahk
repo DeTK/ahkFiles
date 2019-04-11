@@ -1,6 +1,7 @@
-﻿#Include MyLib.ahk
-#Include Gdip.ahk
-#Include Gdip_ImageSearch.ahk
+﻿; #Include Gdip.ahk
+; #Include Gdip_ImageSearch.ahk
+#Include MyLib.ahk
+#Include MyGdip.ahk
 
 OnMessage(0x20a, "WM_MOUSEWHEEL")
 OnMessage(0x203, "WM_LBUTTONDBLCLK")
@@ -23,14 +24,14 @@ CoordMode, ToolTip, Relative
 SetBatchLines, -1 
 Process, Priority,, High 
 ListLines, Off 
-
+ 
 global G_List :=        
 global G_Hwnd :=  
 global G_File :=   
 global G_Num :=
 global G_Title :=    
 global G_GuiHwnd :=
-global MyLib := new MyLib()
+global MyGdip := new MyGdip()
 Gui, +hwndhMyGUI
 Gui, +AlwaysOnTop +Owner -SysMenu
 Gui, Add, Button, x150 y5 w60 h20 gGuiClose, 닫기
@@ -45,7 +46,7 @@ Gui, Add, Text, xp+100 yp+6 w200 h15,
 Gui, Add, Edit, xp-99 yp+20 w300 h20 0x800,
 Gui, Add, Button, xp-1 yp+24 w60 h22 Disabled, 검색
 ;Gui, Add, StatusBar,, 상태바이다
-Gui, Show, x1400 w350, >
+Gui, Show, x1400 w350, > 
 G_GuiHwnd := WinExist("A")
 Return 
  
@@ -99,7 +100,7 @@ WM_MOUSEWHEEL(wParam, lParam, message, hwnd)
 	{
 		if (GetAsyncKeyState("LCtrl"))  ; 첫번째순번 아래일 경우
 		{
-			MyLib.createSquare(0, 0, 0)
+			MyGdip.createSquare()
 			return
 		}
 		if (wParam == 7864320) ; 휠 올림
@@ -121,8 +122,7 @@ WM_MOUSEWHEEL(wParam, lParam, message, hwnd)
 				G_Num := G_Num - G_List[1]
 			}
 		}
-		ToolTip, % G_Num,100,
-		MyLib.createSquare(G_Hwnd, G_List, G_Num)
+		MyGdip.createSquare(G_Hwnd, G_List, G_Num)
 	}
 	return
 }
@@ -132,17 +132,18 @@ WM_MOUSEWHEEL(wParam, lParam, message, hwnd)
 Button창선택:
 Gui, Show,, > 원하는창 선택후 스페이스를 눌려주세요
 GuiControl,, Edit1,
-MyLib.blockHotkey("Space") ; 해당키가 눌려야 다음으로 진행
+blockHotkey("Space") ; 해당키가 눌려야 다음으로 진행
 G_Hwnd := WinExist("A") ; 현재 활성화된 창의 고유아이디를 가져온다. 
 if (G_GuiHwnd == G_Hwnd) 
 {
 	GuiControl,, Edit1, % "현재창 말고 다른창을 선택해주세요"
+	Gui, Show,, >
 	return
 }
 WinGetActiveTitle, G_Title
 GuiControl, Enable, Button4
 GuiControl,, Edit1, % G_Title
-Gui, Show,, % ">"
+Gui, Show,, % ">"  
 return
 
 Button파일선택:    
@@ -171,15 +172,10 @@ return
 
 
 Button검색:
-; if (MyLib)
-; {
-; 	MyLib :=
-; 	MyLib := new MyLib()
-; }
 Gui, Submit, NoHide
 ; 핸들, 파일이름
-Gui, Show,, % "> 찾는중..."
-G_List := MyLib.searchInactiveImage(G_Hwnd, G_File)
+Gui, Show,, % "> 찾는중..." 
+G_List := MyGdip.searchInactiveImage(G_Hwnd, G_File)
 G_Num := 0
 Guicontrol,, Static1,
 if (G_List[1])
@@ -198,5 +194,5 @@ ExitApp
 
 
 F5::
-MyLib.GetAsyncKeyState("lalt")
+GetAsyncKeyState("lalt")
 return

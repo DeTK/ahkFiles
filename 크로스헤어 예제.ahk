@@ -45,7 +45,8 @@ if (!mouse_blocked) ;  ; This is the first time the update_DrawingGUI is run.
  hdc := CreateCompatibleDC()
  obm := SelectObject(hdc, hbm)
  G := Gdip_GraphicsFromHDC(hdc)
- pPen := Gdip_CreatePen("0xFFFAAA3C", 1)
+ pPen := Gdip_CreatePen("0x5500FF00", 2.5)
+}
 else ; Update crosshair according to mouse position
 {
  MouseGetPos, now_x, now_y
@@ -59,5 +60,3 @@ return
  
 ESC::
 exitapp
-
-Remainder

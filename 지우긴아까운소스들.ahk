@@ -98,3 +98,8 @@
 	;Gdip_DrawRectangle(CS_G, pPen, x - 5, y - 5, w + 9, h + 9)
 	;Gdip_DeletePen(pPen)
 	;UpdateLayeredWindow(CS_hwnd, CS_hdc, 0, 0, A_ScreenWidth, A_ScreenHeight) ; 업데이트해줘서 실제로 보여준다.
+
+
+; 마우스의좌표인 lparam을 x와y로 분리하는방법
+; winX := (posList[imageNum + 2] & 0xffff) + winX		           ; 찾은 x좌표 + 현재창의 x
+; winY := ((posList[imageNum + 2] >> 16) & 0xffff) + winY         ; 찾은 y좌표 + 현재창의 y
